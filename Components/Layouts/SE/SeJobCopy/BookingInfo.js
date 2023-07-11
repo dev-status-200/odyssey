@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Popover, InputNumber, Tag } from "antd";
+import React, { useEffect, useState } from 'react'
+import { Popover, InputNumber, Tag, Checkbox, Modal } from "antd";
 import SelectComp from '/Components/Shared/Form/SelectComp';
 import SelectSearchComp from '/Components/Shared/Form/SelectSearchComp';
 import DateComp from '/Components/Shared/Form/DateComp';
@@ -16,15 +16,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import Router from 'next/router';
 import InputComp from '/Components/Shared/Form/InputComp';
+import {createNotification} from '../../../../functions/notifications'
+import Cookies from 'js-cookie';
 
-const BookingInfo = ({register, control, errors, state, useWatch, dispatch, reset}) => {
+const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck, register, control, errors, state, useWatch, dispatch, reset, watch, id}) => {
 
   const dispatchNew = useDispatch();
   const transportCheck = useWatch({control, name:"transportCheck"});
   const transporterId = useWatch({control, name:"transporterId"});
   const customCheck = useWatch({control, name:"customCheck"});
   const customAgentId = useWatch({control, name:"customAgentId"});
-  const approved = useWatch({control, name:"approved"});
   const vesselId = useWatch({control, name:"vesselId"});
   const VoyageId = useWatch({control, name:"VoyageId"});
   const ClientId = useWatch({control, name:"ClientId"});
@@ -34,7 +35,35 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
   const forwarderId = useWatch({control, name:"forwarderId"});
   const shippingLineId = useWatch({control, name:"shippingLineId"});
   const localVendorId = useWatch({control, name:"localVendorId"});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState();
 
+
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  
+  const handleOk = () => {
+    let allValues = watch({control})
+    allValues.approved = check ? '1' : ''
+    const data = {
+      creatorId: state.selectedRecord.createdById ,
+      type: "SE JOB", subType : allValues.jobNo, 
+      opened: 0,
+      companyId, recordId: allValues.id, createdById: Cookies.get("loginId"),
+      notification: check ?  `Job No ${allValues.jobNo} Approved`: `Job No ${allValues.jobNo} Dispproved`
+    }
+
+    handleSubmit(onEdit(allValues))
+    createNotification(data)
+    setIsModalOpen(false)
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+ 
   const filterVessels = (list) => {
     let result = [];
     list.forEach((x)=>{
@@ -91,6 +120,19 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
     Router.push(route);
   }
 
+
+  const onChange = (e ) => {
+    if(e.target.checked == true) {
+      setTitle("Are You Sure You Want To Approve his Job?")
+      setCheck(true)
+      showModal()  
+    }
+    else{
+      setTitle("Are You Sure You Want To Disapprove his Job?")
+      setCheck(false)
+      showModal()
+    }
+  };
   return (
   <>
     <Row>
@@ -325,12 +367,12 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
             <Col md={6} className='mt-2'>
               <SelectComp register={register} name='pkgUnit' control={control} label='.' width={"100%"} disabled={getStatus(approved)}
                 options={[  
-                  {"id":"BAGS"   , "name":"BAGS"},
-                  {"id":"BALES"  , "name":"BALES"},
-                  {"id":"BARRELS", "name":"BARRELS"},
-                  {"id":"CARTONS", "name":"CARTONS"},
-                  {"id":"BLOCKS" , "name":"BLOCKS"},
-                  {"id":"BOATS"  , "name":"BOATS"}
+                {"id":"BAGS"   , "name":"BAGS"},
+                {"id":"BALES"  , "name":"BALES"},
+                {"id":"BARRELS", "name":"BARRELS"},
+                {"id":"CARTONS", "name":"CARTONS"},
+                {"id":"BLOCKS" , "name":"BLOCKS"},
+                {"id":"BOATS"  , "name":"BOATS"}
               ]} />
             </Col>
           </Row>
@@ -338,8 +380,10 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
       </Col>
       <Col md={3}>
         {state.edit &&<Notes state={state} dispatch={dispatch} />}
-        {approved=="1" && <img src={'/approve.png'} height={100} />}
-        <CheckGroupComp register={register}name='approved'control={control}label='_____________________' options={[{label:"Approve Job",value:"1"}]}/>
+        {console.log("approved", state.selectedRecord.approved  )}
+        {(state.selectedRecord.approved == '1' || check == true)   && <img src={'/approve.png'} height={100} />}
+        {id!="new" && <Checkbox onChange={onChange} checked={check}>Approve This Job</Checkbox>}
+       
         <hr/>
         <div style={{display:"flex", flexWrap:"wrap", gap:"0.8rem"}}>
         <button className='btn-custom px-4' type="button"
@@ -355,8 +399,8 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
         </button>
         <Popover
         content={
-          <>{state.InvoiceList?.map((x) => 
-            (<div className='my-1'>
+          <>{state.InvoiceList?.map((x, i) => 
+            (<div key={i} className='my-1'>
               <Tag color="geekblue" style={{fontSize:15, cursor:"pointer", width:130, textAlign:'center'}}
                 onClick={()=>{
                 dispatch({ type:'set',
@@ -381,6 +425,10 @@ const BookingInfo = ({register, control, errors, state, useWatch, dispatch, rese
     {(state.voyageVisible && approved[0]!="1") && 
       <CustomBoxSelect reset={reset} useWatch={useWatch} control={control} state={state} dispatch={dispatch}/>
     }
+      <Modal title={title} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      
+      </Modal>
+    
   </>
 )}
 export default BookingInfo

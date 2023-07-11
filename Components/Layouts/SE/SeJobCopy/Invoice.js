@@ -8,10 +8,10 @@ const Invoice = ({state, dispatch, companyId}) => {
     const [load, setLoad] = useState(false);
 
     useEffect(() => {
-      if(state.tabState=="5"){
+    if(state.tabState=="5"){
         getData();
-      }
-      return () => { }
+    }
+    return () => { }
     }, [state.selectedInvoice, state.tabState])
     
     const getData = async() => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from "antd";
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,12 +18,14 @@ import { useDispatch } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import Router from "next/router";
 
-const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData}) => {
-
-  const {register, control, handleSubmit, reset, formState:{errors} } = useForm({
+const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData, id}) => {
+  
+  const {register, control, handleSubmit, reset, formState:{errors}, watch } = useForm({
     resolver:yupResolver(SignupSchema), defaultValues:state.values
   });
+  const approved = useWatch({control, name:"approved"});
   const subType = useWatch({control, name:"subType"});
+  const [check, setCheck] = useState(state.selectedRecord.approved == 1 ? true : false);
   const dispatchNew = useDispatch();
 
   useEffect(() => {
@@ -95,6 +97,7 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData}) => {
     let loginId = Cookies.get('loginId');
     data.createdById = loginId;
     dispatch({type:'toggle', fieldName:'load', payload:true});
+    console.log(data.approved)
     setTimeout(async() => {
         await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_CREATE_SEAJOB,{
           data
@@ -133,6 +136,7 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData}) => {
     data.shippingLineId = data.shippingLineId!=""?data.shippingLineId:null;
     data.approved = data.approved[0]=="1"?true:false;
     data.companyId = companyId;
+  
     dispatch({type:'toggle', fieldName:'load', payload:true});
     setTimeout(async() => {
         await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_EDIT_SEAJOB,{data}).then((x)=>{
@@ -150,40 +154,43 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData}) => {
 
   return(
   <div className='client-styles' style={{overflowY:'auto', overflowX:'hidden'}}>
-    <form onSubmit={handleSubmit(state.edit?onEdit:onSubmit, onError)}>
-    <Tabs defaultActiveKey={state.tabState} activeKey={state.tabState}
-     onChange={(e)=> dispatch({type:'toggle', fieldName:'tabState', payload:e}) }>
+      <form onSubmit={handleSubmit(state.edit?onEdit:onSubmit, onError)}>
+      <Tabs defaultActiveKey={state.tabState} activeKey={state.tabState}
+      onChange={(e)=> dispatch({type:'toggle', fieldName:'tabState', payload:e}) }>
       <Tabs.TabPane tab="Booking Info" key="1"> 
-       <BookingInfo control={control} register={register} errors={errors} state={state} useWatch={useWatch} dispatch={dispatch} reset={reset}  />   
+      <BookingInfo handleSubmit={handleSubmit} onEdit={onEdit} companyId={companyId} approved={approved} check={check} 
+        setCheck={setCheck} watch={watch} control={control} register={register} errors={errors} state={state} 
+        useWatch={useWatch} dispatch={dispatch} reset={reset} id={id}
+      />   
       </Tabs.TabPane>
       {subType=="FCL" &&
       <Tabs.TabPane tab="Equipment" key="2">
-        <EquipmentInfo control={control} register={register} errors={errors} state={state} dispatch={dispatch} useWatch={useWatch}/>
+      <EquipmentInfo control={control} register={register} errors={errors} state={state} dispatch={dispatch} useWatch={useWatch}/>
       </Tabs.TabPane>
       }
       <Tabs.TabPane tab="Routing" key="3">
-        <Routing control={control} register={register} errors={errors} state={state} useWatch={useWatch} />
+      <Routing control={control} register={register} errors={errors} state={state} useWatch={useWatch} />
       </Tabs.TabPane >
       {state.edit &&
       <Tabs.TabPane tab="Charges" key="4">
-        <ChargesComp state={state} dispatch={dispatch} />
+      <ChargesComp state={state} dispatch={dispatch} />
       </Tabs.TabPane>
       }
       {(state.selectedInvoice!='') &&
       <Tabs.TabPane tab="Invoice / Bills" key="5">
-        <Invoice state={state} dispatch={dispatch} companyId={companyId} />
+      <Invoice state={state} dispatch={dispatch} companyId={companyId} />
       </Tabs.TabPane>
       }
-    {(state.loadingProgram!='') &&
+      {(state.loadingProgram!='') &&
       <Tabs.TabPane tab="Loading Program" key="6">
-        <LoadingProgram state={state} dispatch={dispatch} companyId={companyId} jobData={jobData} />
+      <LoadingProgram state={state} dispatch={dispatch} companyId={companyId} jobData={jobData} />
       </Tabs.TabPane>
       }
-    </Tabs>
+      </Tabs>
       {(state.tabState!="4" && state.tabState!="5" && state.tabState!="6") &&
       <>
       <button type="submit" disabled={state.load?true:false} className='btn-custom mt-3'>
-        {state.load?<Spinner animation="border" size='sm' className='mx-3' />:'Save Job'}
+      {state.load?<Spinner animation="border" size='sm' className='mx-3' />:'Save Job'}
       </button>
       </>
       }

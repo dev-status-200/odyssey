@@ -4,7 +4,6 @@ import CreateOrEdit from './CreateOrEdit';
 import { useSelector, useDispatch } from 'react-redux';
 import { appendValue } from '/redux/seJobValues/seJobValuesSlice';
 import Cookies from "js-cookie";
-import axios from 'axios';
 
 const SeJob = ({fieldsData, jobData, id}) => {
   const companyId = useSelector((state) => state.company.value);
@@ -43,7 +42,7 @@ const SeJob = ({fieldsData, jobData, id}) => {
     <div className='base-page-layout'>
      {state.fetched && 
       <>
-      <CreateOrEdit state={state} dispatch={dispatch} baseValues={baseValues} companyId={companyId} jobData={jobData} />
+      <CreateOrEdit state={state} dispatch={dispatch} baseValues={baseValues} companyId={companyId} jobData={jobData} id={id} />
       </>
      }
     </div>

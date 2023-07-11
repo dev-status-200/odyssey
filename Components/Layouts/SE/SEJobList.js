@@ -11,7 +11,10 @@ const SEJobList = ({jobsData, fieldsData}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setRecords(jobsData.result);
+    if(jobsData.status=="success"){
+      setRecords(jobsData.result);
+    }
+    console.log(jobsData)
   }, [])
   return (
   <>
@@ -53,7 +56,6 @@ const SEJobList = ({jobsData, fieldsData}) => {
             <br/>Freight Type: <span className='grey-txt'>{x.freightType}</span>
           </td>
           <td>
-            {/* Vessel: <span className='grey-txt'>{x.vessel}</span><br/> */}
             POL: <span className='grey-txt'>{x.pol}</span><br/>
             POD: <span className='grey-txt'>{x.pod}</span><br/>
             FLD: <span className='grey-txt'> {x.fd}</span>
