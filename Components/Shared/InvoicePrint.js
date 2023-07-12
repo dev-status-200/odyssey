@@ -4,6 +4,7 @@ import moment from "moment";
 import ports from "/jsonData/ports";
 import inWords from '../../functions/numToWords';
 import parse from "html-react-parser";
+import Cookies from 'js-cookie';
 
 const InvoicePrint = ({records, invoice, calculateTotal}) => {
 
@@ -48,7 +49,7 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
         <Col md={5}><Line/></Col>
     </Row>
     <Row style={{paddingLeft:12, paddingRight:12}}>
-        <Col md={6} style={{border:border, borderRight:border, borderLeft:border, borderBottom:border, maxHeight:70, overflow:'hidden'}} className='p-1'>
+        <Col md={6} style={{borderTop:border, borderRight:border, borderLeft:"2px solid black", borderBottom:border, maxHeight:70, overflow:'hidden'}} className='p-0 px-1'>
             <div style={heading}>INVOICE TO</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.name}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.address1}</div>
@@ -56,7 +57,7 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
             <div style={paraStyles}>{invoice.SE_Job.Client.telephone1}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.mobile1}</div>
         </Col>
-        <Col md={6} style={{ borderRight:border, borderTop:border, borderBottom:border, maxHeight:70, overflow:'hidden'}} className='p-1'>
+        <Col md={6} style={{ borderRight:"2px solid black", borderTop:border, borderBottom:border, borderLeft:border, maxHeight:70, overflow:'hidden'}} className='p-1'>
         <div style={heading}>Shipper/Consignee</div>
             <div style={paraStyles}>{invoice.SE_Job.consignee?.name}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client?.address1}</div>
@@ -239,11 +240,11 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
         <Row className='mx-0'>
             <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border, fontSize:12}}>
                 <b className='fw-8'>Note</b>
-                <div style={{minHeight:60}}>
+                <div style={{minHeight:60, lineHeight:1}} >
                     {invoice?.note?.length>40 && 
-                    <div className="bl-print" style={{color:'black'}}>{parse(invoice.note)}</div>
+                    <div className="bl-print" style={{color:'black', whiteSpace:'pre-wrap'}}>{invoice.note}</div>
                     }
-                {/*  */}
+
                 </div>
                 
             </Col>
@@ -266,6 +267,24 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
             </Col>
         </Row>
       </>
+    <div style={{position:'fixed', bottom:30, width:'90vw'}}>
+        <Row className='justify-content-center'>
+            <Col md={4} className='fs-10'></Col>
+            <Col md={4} className='fs-10'></Col>
+            <Col md={4} className='text-center'>
+                <div>____________________</div>
+                <div className='fs-12 px-5'><b>SEAN NET SHIPPING {"&"} LOGISTICS</b></div>
+            </Col>
+        </Row>
+    </div>
+    <div style={{position:'fixed', bottom:30, width:'90vw'}}>
+        <Row className='justify-content-center'>
+            <Col md={4} className='fs-10'>Printed On: <span className='mx-2'>{moment().format("DD / MMM / YYYY")}</span></Col>
+            <Col md={4} className='fs-10'>Printed By: {Cookies.get("username")}</Col>
+            <Col md={4} className=''>
+            </Col>
+        </Row>
+    </div>
     </div>
   )
 }

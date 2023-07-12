@@ -89,7 +89,7 @@ const PartySearch = ({state, dispatch, reset, useWatch, control}) => {
         <td className='pt-1 text-center px-3'> {x.check?<CheckCircleOutlined style={{color:'green', position:'relative', bottom:2}} />:i+1 } </td>
         <td className='pt-1' style={{whiteSpace:"nowrap"}}><strong>{x.name}</strong></td>
         <td className='pt-1 text-center'>
-          {x.types.split(", ").map((y, i2)=>{
+          {x.types?.split(", ").map((y, i2)=>{
             return <Tag key={i2} color="purple" className='mb-1'>{y}</Tag>
           })}
         </td>

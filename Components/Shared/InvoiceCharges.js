@@ -6,16 +6,18 @@ import axios from 'axios';
 import openNotification from '../Shared/Notification';
 import FullScreenLoader from './FullScreenLoader';
 import InvoicePrint from './InvoicePrint';
-import { Checkbox, Popover } from 'antd';
+import { Checkbox, Popover, Input } from 'antd';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Paragraph from '@tiptap/extension-paragraph';
 import BulletList from '@tiptap/extension-bullet-list';
+const { TextArea } = Input;
 
 const InvoiceCharges = ({data, companyId}) => {
 
   let inputRef = useRef(null);
   
+  const [invoiceData, setInvoiceData] = useState(false);
   const [records, setRecords] = useState([]);
   const [invoice, setInvoice] = useState({
     Charge_Heads:[],
@@ -30,6 +32,7 @@ const InvoiceCharges = ({data, companyId}) => {
         fd:'',
         SE_Equipments:[]
     },
+    note:''
   });
   const [load, setLoad] = useState(false);
   const [ref, setRef] = useState(false);
@@ -40,6 +43,7 @@ const InvoiceCharges = ({data, companyId}) => {
     if(Object.keys(data).length>0){
         setInvoice(data.resultOne);
         setRecords(data.resultOne?.Charge_Heads);
+        setInvoiceData(!invoiceData)
     }
   }, [data])
 
@@ -60,7 +64,6 @@ const InvoiceCharges = ({data, companyId}) => {
     let exp={}, income={},party={}; //exp is the Expense Account, income is Income Account, party is Party's account to create vouhcer with Ledger
     setLoad(true);
     let tempInv = {...invoice};
-    console.log(companyId)
     await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_ALL_SE_JOB_CHILDS,{
         headers:{ title:JSON.stringify(["FCL FREIGHT INCOME", "FCL FREIGHT EXPENSE"]), companyid:companyId }
     }).then((x)=>{
@@ -240,41 +243,16 @@ const InvoiceCharges = ({data, companyId}) => {
     </div>
   )
 
-  const Editor = () => useEditor({
-    extensions: [
-      StarterKit,
-      // CharacterCount.configure({
-      //   limit: 10
-      // }),
-      Paragraph.configure({
-        HTMLAttributes: {
-          class: 'my-custom-paragraph'
-        }
-      }),
-    ],
-    autofocus: true,
-    content: invoice.note,
-    onUpdate({ editor }) {
-      //set(variable, editor.getHTML())
-      setInvoice({...invoice, note:editor.getHTML()})
-    },
-  },[])
-
-  const partyDetail = {
-    height:80,
-    overflowY:'auto',
-    padding:0,
-    color:'black',
-    backgroundColor:'white'
-  }
-
   const updateNote = async() => {
     console.log(invoice.note)
-    // await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_INVOICE_NOTE_UPDATE,{
-    //     id:invoice.id, note:invoice.note
-    // }).then((x)=>{
-    //     console.log(x.data)
-    // })
+    await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_INVOICE_NOTE_UPDATE,{
+        id:invoice.id, note:invoice.note
+    }).then((x)=>{
+        console.log(x.data);
+        if(x.data.status=="success"){
+            openNotification("Success", "Note Saved!", "green")
+        }
+    })
   }
 
 return (
@@ -453,7 +431,7 @@ return (
     <Col className='mx-2' md={4}>
         Note
         <div style={{border:"1px solid silver"}}>
-        <EditorContent editor={Editor()} style={partyDetail} />
+        <TextArea rows={4} value={invoice.note} onChange={(e)=>setInvoice({...invoice, note:e.target.value})} />
         </div>
     </Col>
     <Col className='py-4'>
@@ -478,7 +456,7 @@ return (
   }
   {/* Printing Component */}
   <div style={{
-        display:"none"
+        //display:"none"
     }}>
     <div ref={(response)=>(inputRef=response)}>
         {invoice && <InvoicePrint records={records} invoice={invoice} calculateTotal={calculateTotal} /> }

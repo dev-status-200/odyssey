@@ -221,7 +221,7 @@ const MainLayout = ({children}) => {
 return (
   <Layout className="main-dashboard-layout">
     {!load && 
-    <Sider trigger={null} collapsible collapsed={collapsed} style={{maxHeight:'100vh', overflowY:'auto'}}>
+    <Sider trigger={null} collapsible collapsed={collapsed} className='side-menu-styles' style={{maxHeight:'100vh', overflowY:'auto'}}>
       <div className={!collapsed?'big-logo':'small-logo'} >
         <span>
           <img src={company=='1'?'/seanet-logo.png':company=='3'?'/aircargo-logo.png':company=='2'?'/cargolinkers-logo.png':null}/>

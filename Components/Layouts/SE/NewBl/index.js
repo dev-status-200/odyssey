@@ -21,13 +21,7 @@ const NewBl = ({ id, blData, partiesData }) => {
   const set = (a, b) => dispatch({ type: "toggle", fieldName: a, payload: b });
   const [deleteArr, setDeleteArr] = useState([]);
   const dispatchNew = useDispatch();
-  const {
-    register,
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const { register, control, handleSubmit, reset, formState: { errors }, } = useForm({
     // resolver: yupResolver(validationSchema),
     defaultValues: state.values,
   });
@@ -165,7 +159,9 @@ const NewBl = ({ id, blData, partiesData }) => {
       getStamps();
     }
   }, [state.tabState]);
+
   const onError = (errors) => console.log(errors);
+  
   return (
     <div className="base-page-layout">
       <div className="client-styles" style={{ overflowY: "auto", overflowX: "hidden" }}>
