@@ -205,8 +205,7 @@ const BlInfo = ({control, id, register, state, useWatch, dispatch, reset}) => {
                     </Col>
                 </Row>
                 </Col>
-                <Col md={1}></Col>
-                <Col md={5}>
+                <Col md={7}>
                 <Row>
                     <Col md={12}>
                         <div className="mt-2" style={{lineHeight:1.35}}>Overseas Agent</div>
@@ -216,7 +215,8 @@ const BlInfo = ({control, id, register, state, useWatch, dispatch, reset}) => {
                         <div className="mt-2" style={{lineHeight:1.35}}>S/Line Carrier</div>
                         <div className='dummy-input'>{allValues.pol}</div>
                     </Col>
-                    {/* <Col md={12}>
+                    {/*
+                    <Col md={12}>
                         <div className="mt-2" style={{lineHeight:1.35}}>Total Container</div>
                         <div className='dummy-input'>
                             {allValues.equip.map((x, i)=>{
@@ -224,7 +224,8 @@ const BlInfo = ({control, id, register, state, useWatch, dispatch, reset}) => {
                             })
                             }
                         </div>
-                    </Col> */}
+                    </Col>
+                    */}
                     <Col md={12}>
                         <div className="mt-2" style={{lineHeight:1.35}}>Delivery</div>
                         <div className='dummy-input'>{allValues.delivery}</div>

@@ -3,6 +3,7 @@ import { Row, Col, Table } from 'react-bootstrap';
 import moment from "moment";
 import ports from "/jsonData/ports";
 import inWords from '../../functions/numToWords';
+import parse from "html-react-parser";
 
 const InvoicePrint = ({records, invoice, calculateTotal}) => {
 
@@ -238,7 +239,13 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
         <Row className='mx-0'>
             <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border, fontSize:12}}>
                 <b className='fw-8'>Note</b>
-                <div style={{minHeight:60}}></div>
+                <div style={{minHeight:60}}>
+                    {invoice?.note?.length>40 && 
+                    <div className="bl-print" style={{color:'black'}}>{parse(invoice.note)}</div>
+                    }
+                {/*  */}
+                </div>
+                
             </Col>
             <Col md={6} className='p-1' style={{borderRight:border, borderBottom:border, fontSize:12}}>
                 <b className='fw-8'>In-Words</b>

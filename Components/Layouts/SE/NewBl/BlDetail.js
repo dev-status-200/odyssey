@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Paragraph from '@tiptap/extension-paragraph'
 import { Row, Col } from 'react-bootstrap';
 import InputComp from '/Components/Shared/Form/InputComp';
 import InputNumComp from '/Components/Shared/Form/InputNumComp';
-import SelectComp from '/Components/Shared/Form/SelectComp';
 import DateComp from '/Components/Shared/Form/DateComp';
-
 
 const BlDetail = ({control, register, state, useWatch, dispatch}) => {
   const set = (a, b) => dispatch({type:'toggle', fieldName:a, payload:b});
