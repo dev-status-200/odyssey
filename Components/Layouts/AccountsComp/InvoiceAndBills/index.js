@@ -35,8 +35,9 @@ const InvoiceAndBills = ({invoiceData}) => {
   const searchInvoice = async(data) => {
     setLoad(true);
     await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_INVOICE_BY_NO, {
-        headers:{"invoice_No": `${data}`}
+        headers:{"invoiceno": `${data}`}
     }).then((x)=>{
+      console.log(x.data)
         if(x.data.result.resultOne!=null){
           setInvoice(x.data.result);
           setVisible(true)
