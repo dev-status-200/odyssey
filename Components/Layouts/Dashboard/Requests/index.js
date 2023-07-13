@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { Row, Col } from 'react-bootstrap';
 
-const index = () => {
+const Requests = ({sessionData}) => {
+
+  useEffect(() => {
+    console.log(sessionData)
+    if(sessionData.isLoggedIn==false){
+      Router.push('/login')
+    }
+  }, [sessionData]);
+
+
   return (
-    <div>
-      Requests
+    <div className='base-page-layout'>
+    
+    
+    
     </div>
   )
 }
 
-export default index
+export default Requests

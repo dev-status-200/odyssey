@@ -7,23 +7,24 @@ import { incrementTab } from '/redux/tabs/tabSlice';
 import Notifications from "./Notifications";
 import Notes from "./Notes";
 
-
- 
   const Home = ({ sessionData }) => {
-  const [userType, setUserType] = useState("");
-  const access = Cookies.get('access')
-  const dispatch = useDispatch()
-  useEffect(() => {
-  setUserType(JSON.parse(Cookies.get("access")).split(", ")[0]);
-  }, []);
 
+    const access = Cookies.get('access');
+    const dispatch = useDispatch();
 
+    useEffect(() => {
+      console.log(sessionData)
+      if(sessionData.isLoggedIn==false){
+        Router.push('/login')
+      }
+    }, [sessionData]);
 
   return (
   <div className="base-page-layout d-flex" >
   {access?.includes("accounts") ? 
-  <Notifications dispatch={dispatch} incrementTab={incrementTab} Router={Router} moment={moment}   />
-  :<Notes dispatch={dispatch} incrementTab={incrementTab} Router={Router} moment={moment}  />}
+    <Notifications dispatch={dispatch} incrementTab={incrementTab} Router={Router} moment={moment} />
+    :<Notes dispatch={dispatch} incrementTab={incrementTab} Router={Router} moment={moment} />
+    }
   </div>
   )};
 

@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InputNumber } from 'antd';
 import { Row, Col } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import { useSelector, useDispatch } from 'react-redux';
+import Router from 'next/router';
 
-const Main = () => {
+const Main = ({sessionData}) => {
     const [prefix, setPrefix] = useState(0);
     const [digits, setDigits] = useState(0);
     const [qty, setQty] = useState(0);
     const [scvData, setCsvData] = useState([]);
     const companyId = useSelector((state) => state.company.value);
+
+    useEffect(() => {
+        console.log(sessionData)
+        if(sessionData.isLoggedIn==false){
+          Router.push('/login')
+        }
+    }, [sessionData]);
 
     const calculate = () => {
         let tempData = [["HAWB Series"]]

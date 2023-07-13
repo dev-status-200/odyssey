@@ -5,7 +5,7 @@ import Main from '/Components/Layouts/Main';
 
 const index = ({sessionData}) => {
   return (
-    <Main/>
+    <Main sessionData={sessionData} />
   )
 }
 
