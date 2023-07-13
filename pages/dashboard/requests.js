@@ -1,22 +1,23 @@
 import React from 'react';
-import Home from '../Components/Layouts/Home';
+import Requests from '/Components/Layouts/Dashboard/Requests';
 import axios from 'axios';
 import Cookies from 'cookies';
 
-const home = ({sessionData}) => {
+const requests = ({sessionData}) => {
   return (
-    <Home sessionData={sessionData} />
+    <Requests sessionData={sessionData} />
   )
 }
 
-export default home
+export default requests
 
-export async function getServerSideProps({req,res}){
-    const cookies = new Cookies(req, res)
+export async function getServerSideProps({req,res}) {
+
+    const cookies = new Cookies(req, res);
     const sessionRequest = await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_LOGIN_VERIFICATION,{
       headers:{"x-access-token": `${cookies.get('token')}`}
     }).then((x)=>x.data);
-  
+
     return{
         props: { sessionData:sessionRequest,  }
     }

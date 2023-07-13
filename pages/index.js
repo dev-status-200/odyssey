@@ -1,13 +1,11 @@
 import React from 'react';
-import Dashboard from '/Components/Layouts/Dashboard';
 import axios from 'axios';
 import Cookies from 'cookies';
+import Main from '/Components/Layouts/Main';
 
 const index = ({sessionData}) => {
   return (
-    <div>
-      <Dashboard sessionData={sessionData} />
-    </div>
+    <Main/>
   )
 }
 
@@ -21,6 +19,6 @@ export async function getServerSideProps({req,res}){
   }).then((x)=>x.data);
 
   return{
-      props: { sessionData:sessionRequest }
+    props: { sessionData:sessionRequest }
   }
 }

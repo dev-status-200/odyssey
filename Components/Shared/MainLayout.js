@@ -80,6 +80,7 @@ const MainLayout = ({children}) => {
 
   const [tabActive, setTabActive] = useState({
     home:false,
+    requests:false,
     employee:false,
     clientList:false,
     client:false,
@@ -121,6 +122,7 @@ const MainLayout = ({children}) => {
         tempTabs.push(tabs);
         let tempTabActive = {...tabActive};
         if(tabs.key=='1-1'){ tempTabActive.home=true }
+        else if(tabs.key=='1-2'){ tempTabActive.requests=true }
         else if(tabs.key=='2-1'){ tempTabActive.employee=true }
         else if(tabs.key=='2-2'){ tempTabActive.clientList=true }
         else if(tabs.key=='2-7'){ tempTabActive.client=true }
@@ -176,7 +178,8 @@ const MainLayout = ({children}) => {
 
   const toggleTab = (x) => {
     setToggleState(x.key);
-    if(x.key=='1-1'){ Router.push('/home') }
+    if(x.key=='1-1'){ Router.push('/dashboard/home') }
+    else if(x.key=='1-2'){ Router.push('/dashboard/requests') }
     else if(x.key=='2-1'){ Router.push('/employees') }
     else if(x.key=='2-2'){ Router.push('/setup/clientList') }
     else if(x.key=='2-7'){ Router.push(`/setup/client/${setKey(x)}`) } //these routes are also settled in 2nd useEffect

@@ -196,77 +196,73 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
             </Row>
         </Col>
     </Row>
-      <>
-        <Table className='pb-0 mb-0' bordered variant='white' size='sm'>
-        <thead className='p-0 m-0'>
-            <tr className='p-0 m-0' style={{border:'1px solid black', backgroundColor:'silver', fontSize:9, color:"black"}}>
-            <td className='p-0 text-center fw-6'>Sr.         </td>
-            <td className='p-0 text-center fw-6'>Charges     </td>
-            <td className='p-0 text-center fw-6'>Qty         </td>
-            <td className='p-0 text-center fw-6'>Rate        </td>
-            <td className='p-0 text-center fw-6'>Curr        </td>
-            <td className='p-0 text-center fw-6'>Amount      </td>
-            <td className='p-0 text-center fw-6'>Dis         </td>  
-            <td className='p-0 text-center fw-6'>Tax         </td>  
-            <td className='p-0 text-center fw-6'>Total Amount</td>  
-            </tr>
-        </thead>
-        <tbody>
-        {records.map((x, index) => {
-        return (
-        <tr key={index} className='table-row-center-singleLine' style={{border:'1px solid black', fontSize:9}}>
-            <td className='text-center p-0'>{index + 1}</td>
-            <td className='text-center p-0'>{x.particular}</td>
-            <td className='text-center p-0'>{x.qty}</td>
-            <td className='text-center p-0'>{x.amount}</td>
-            <td className='text-center p-0'>{x.currency}</td>
-            <td className='text-center p-0'>{x.amount}</td>
-            <td className='text-center p-0'>{x.discount}</td>
-            <td className='text-center p-0'>{x.tax_amount}</td>
-            <td className='text-center p-0'>{x.local_amount}</td>
+    <Table className='pb-0 mb-0' bordered variant='white' size='sm'>
+    <thead className='p-0 m-0'>
+        <tr className='p-0 m-0' style={{border:'1px solid black', backgroundColor:'silver', fontSize:9, color:"black"}}>
+        <td className='p-0 text-center fw-6'>Sr.         </td>
+        <td className='p-0 text-center fw-6'>Charges     </td>
+        <td className='p-0 text-center fw-6'>Qty         </td>
+        <td className='p-0 text-center fw-6'>Rate        </td>
+        <td className='p-0 text-center fw-6'>Curr        </td>
+        <td className='p-0 text-center fw-6'>Amount      </td>
+        <td className='p-0 text-center fw-6'>Dis         </td>  
+        <td className='p-0 text-center fw-6'>Tax         </td>  
+        <td className='p-0 text-center fw-6'>Total Amount</td>  
         </tr>
-        )})}
-        </tbody>
-        </Table>
-        <Row style={{borderRight:border, borderLeft:border, borderBottom:border}} className='mx-0 pt-1'>
-        <Col md={4} style={{fontSize:10}}><b className='fw-8'>Total Discount</b> <span style={{float:'right'}} className='px-3'>0.00</span></Col>
-        <Col md={4} style={{fontSize:10}}><b className='fw-8'>Tax Amount</b>     <span style={{float:'right'}} className='px-3'>0.00</span></Col>
-        <Col md={4} style={{fontSize:10}}>
-            <div><b className='fw-8'>Invoice Total {"("}PKR{")"}</b> <span style={{float:'right'}}>{(calculateTotal(records))}</span></div>
-            <div><b className='fw-8'>Round Off </b> <span style={{float:'right'}} >{invoice.roundOff}</span></div>
-            <div><b className='fw-8'>Total Amount </b> <span style={{float:'right'}} >{((parseFloat(invoice.total) + parseFloat(invoice.roundOff)).toFixed(2))}</span></div>
+    </thead>
+    <tbody>
+    {records.map((x, index) => {
+    return (
+    <tr key={index} className='table-row-center-singleLine' style={{border:'1px solid black', fontSize:9}}>
+        <td className='text-center p-0'>{index + 1}</td>
+        <td className='text-center p-0'>{x.particular}</td>
+        <td className='text-center p-0'>{x.qty}</td>
+        <td className='text-center p-0'>{x.amount}</td>
+        <td className='text-center p-0'>{x.currency}</td>
+        <td className='text-center p-0'>{x.amount}</td>
+        <td className='text-center p-0'>{x.discount}</td>
+        <td className='text-center p-0'>{x.tax_amount}</td>
+        <td className='text-center p-0'>{x.local_amount}</td>
+    </tr>
+    )})}
+    </tbody>
+    </Table>
+    <Row style={{borderRight:border, borderLeft:border, borderBottom:border}} className='mx-0 pt-1'>
+    <Col md={4} style={{fontSize:10}}><b className='fw-8'>Total Discount</b> <span style={{float:'right'}} className='px-3'>0.00</span></Col>
+    <Col md={4} style={{fontSize:10}}><b className='fw-8'>Tax Amount</b>     <span style={{float:'right'}} className='px-3'>0.00</span></Col>
+    <Col md={4} style={{fontSize:10}}>
+        <div><b className='fw-8'>Invoice Total {"("}PKR{")"}</b> <span style={{float:'right'}}>{(calculateTotal(records))}</span></div>
+        <div><b className='fw-8'>Round Off </b> <span style={{float:'right'}} >{invoice.roundOff}</span></div>
+        <div><b className='fw-8'>Total Amount </b> <span style={{float:'right'}} >{((parseFloat(invoice.total) + parseFloat(invoice.roundOff)).toFixed(2))}</span></div>
+    </Col>
+    </Row>
+    <Row className='mx-0'>
+        <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border, fontSize:12}}>
+            <b className='fw-8'>Note</b>
+            <div style={{minHeight:60, lineHeight:1}} >
+                {invoice?.note?.length>40 && 
+                <div className="bl-print" style={{color:'black', whiteSpace:'pre-wrap'}}>{invoice.note}</div>
+                }
+            </div>
         </Col>
-        </Row>
-        <Row className='mx-0'>
-            <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border, fontSize:12}}>
-                <b className='fw-8'>Note</b>
-                <div style={{minHeight:60, lineHeight:1}} >
-                    {invoice?.note?.length>40 && 
-                    <div className="bl-print" style={{color:'black', whiteSpace:'pre-wrap'}}>{invoice.note}</div>
-                    }
-
-                </div>
-                
-            </Col>
-            <Col md={6} className='p-1' style={{borderRight:border, borderBottom:border, fontSize:12}}>
-                <b className='fw-8'>In-Words</b>
-                <p>{invoice.type=="Job Invoice"?"PKR":invoice.type=="Job Bill"?"PKR":"USD"} {inWords(parseFloat(calculateTotal(records)))}</p>
-            </Col>
-        </Row>
-        <Row className='mx-0'>
-            <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border}}>
-                <b className='fw-8' style={{fontSize:12}}>Bank Details</b>
-                <div style={{fontSize:12, lineHeight:1.5}}>
-                    IBAN: PK08 BAHL 1054 0081 0028 1201<br/>
-                    A/C #: 1054-0081-002182-01-5<br/>
-                    TITLE: SEANET SHIPPING & LOGISTICS<br/>
-                    BANK: BANL AL HABIB LIMITED<br/>
-                    BRANCH: TARIQ ROAD 1054, KARACHI<br/>
-                    SWIFT: BAHLPKKAXXX
-                </div>
-            </Col>
-        </Row>
-      </>
+        <Col md={6} className='p-1' style={{borderRight:border, borderBottom:border, fontSize:12}}>
+            <b className='fw-8'>In-Words</b>
+            <p>{invoice.type=="Job Invoice"?"PKR":invoice.type=="Job Bill"?"PKR":"USD"} {inWords(parseFloat(calculateTotal(records)))}</p>
+        </Col>
+    </Row>
+    <Row className='mx-0'>
+        <Col md={6} className='p-1' style={{borderRight:border, borderLeft:border, borderBottom:border}}>
+            <b className='fw-8' style={{fontSize:12}}>Bank Details</b>
+            <div style={{fontSize:12, lineHeight:1.5}}>
+                IBAN: PK08 BAHL 1054 0081 0028 1201<br/>
+                A/C #: 1054-0081-002182-01-5<br/>
+                TITLE: SEANET SHIPPING & LOGISTICS<br/>
+                BANK: BANL AL HABIB LIMITED<br/>
+                BRANCH: TARIQ ROAD 1054, KARACHI<br/>
+                SWIFT: BAHLPKKAXXX
+            </div>
+        </Col>
+    </Row>
     <div style={{position:'fixed', bottom:30, width:'90vw'}}>
         <Row className='justify-content-center'>
             <Col md={4} className='fs-10'></Col>

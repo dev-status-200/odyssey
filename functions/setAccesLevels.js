@@ -13,6 +13,11 @@ function setAccesLevels(dispatch, collapsed){
         key: '1-1',
         children: `Content of Tab Pane 2`,
       }),
+      getItem('Requests', '1-2',<></>, null, {
+        label: `Requests`,
+        key: '1-2',
+        children: `Content of Tab Pane 2`,
+      }),
     ])
     const setup = getParentItem('Setup', '2', <SettingOutlined />,
     [
