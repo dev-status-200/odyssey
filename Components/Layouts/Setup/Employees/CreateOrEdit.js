@@ -7,6 +7,7 @@ import "antd/dist/antd.css";
 import * as Yup from 'yup';
 import axios from 'axios';
 import Cookies from 'js-cookie'
+import Vouchers from "./Vouchers";
 
 const SignupSchema = Yup.object().shape({
     empName: Yup.string().min(3, 'Too Short!').max(45, 'Too Long!').required('Required'),
@@ -73,6 +74,8 @@ const CreateOrEdit = ({appendClient, edit, setVisible, setEdit, selectedEmployee
   });
 
   const [load, setLoad] = useState(false);
+  const [vouchers, setVouchers] = useState(false);
+  const [voucherList, setVoucherList] = useState([]);
 
   useEffect(() => {
     if(edit){
@@ -110,6 +113,19 @@ const CreateOrEdit = ({appendClient, edit, setVisible, setEdit, selectedEmployee
     }
     return () => { }
   }, [edit, selectedEmployee])
+
+  const loadVouchers = async() => {
+    setLoad(true);
+    await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_VOUCHERS_BY_EPMLOYEE,{
+      headers:{'id':`${selectedEmployee.id}`}
+    })
+    .then((x)=>{
+      console.log(x.data);
+      setVoucherList(x.data.result)
+      setVouchers(true);
+      setLoad(false);
+    })
+  }
 
 return( 
   <div className='employee-styles'>
@@ -298,10 +314,16 @@ return(
         </Form.Item>
         </Col>
       </Row>
-      <button className="btn-custom my-3" style={{border:'none'}} type="submit" disabled={isSubmitting}>{load?<Spinner animation="border" role="status" size="sm" className="mx-3" />:'Submit'}</button> 
+      <button className="btn-custom my-3" style={{border:'none'}} type="submit" disabled={isSubmitting}>
+        {load?<Spinner animation="border" role="status" size="sm" className="mx-3" />:'Submit'}
+      </button> 
+      <button className="btn-custom my-3 mx-3" type="button" style={{border:'none'}} onClick={loadVouchers}>
+        {load?<Spinner animation="border" role="status" size="sm" className="mx-3" />:'Show Vouchers'}
+      </button> 
     </Form> 
   )} 
   </Formik>
+    {vouchers && <Vouchers vouchers={vouchers} setVouchers={setVouchers} voucherList={voucherList} />}
   </div> 
 )}
 
