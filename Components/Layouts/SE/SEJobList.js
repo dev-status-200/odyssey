@@ -34,7 +34,7 @@ const SEJobList = ({jobsData, fieldsData}) => {
       <hr className='my-2' />
       <div className='mt-3' style={{maxHeight:500, overflowY:'auto'}}>
         <Table className='tableFixHead'>
-        <thead><tr><th>Sr.</th><th>Basic Info</th><th>Shipment Info</th><th>Container Info</th><th>Other Info</th><th></th></tr></thead>
+        <thead><tr><th>Sr.</th><th>Basic Info</th><th>Shipment Info</th><th>Container Info</th><th>Other Info</th><th>Status</th><th>Created By</th></tr></thead>
         <tbody>
         {
         records.map((x, index) => {
@@ -72,6 +72,9 @@ const SEJobList = ({jobsData, fieldsData}) => {
           </td>
           <td>
             {x.approved=="true"?<img src={'/approve.png'} height={70} className='' />:"Not Approved"}
+          </td>
+          <td className='blue-txt fw-6'>
+            {x.created_by?.name}
           </td>
         </tr>
           )
