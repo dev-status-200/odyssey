@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 
@@ -16,12 +16,21 @@ const PrintVoucehr = ({ state, companyId }) => {
     }
   };
 
+
+  const lineHeight = (x) => {
+  const val = (x.length / 69).toFixed() * 22
+    return val
+  }
+
+ 
+  
+
   return (
     <div>
       <ReactToPrint
         content={() => inputRef}
         trigger={() => (
-          <div className="div-btn-custom text-center p-2 px-4">Print</div>
+          <div  className="div-btn-custom text-center p-2 px-4">Print</div>
         )}
       />
 
@@ -32,6 +41,7 @@ const PrintVoucehr = ({ state, companyId }) => {
       >
         {/* heading */}
         <div
+
           style={{
             padding: "2rem",
             display: "flex",
@@ -108,8 +118,8 @@ const PrintVoucehr = ({ state, companyId }) => {
 
             {!state.descriptive &&
                <>
-            <div style={{display:'inline-block', width:'15%'}}>ON A/C OF:</div>
-            <p style={{textDecoration:'underline', whiteSpace:'pre-wrap'}}>{state.onAcOf}</p>
+            <div  style={{display:'inline-block', width:'15%'}}>ON A/C OF:</div>
+            <p  style={{textDecoration:'underline', whiteSpace:'pre-wrap'}}>{state.onAcOf}</p>
                </>
             }
            
@@ -120,8 +130,8 @@ const PrintVoucehr = ({ state, companyId }) => {
 
             {state.descriptive && state.list.map((x, i)=>{
               return(
-                <div style={{borderBottom:border, display:'inline-block', width:i==0?"85%":"100%"}} key={i}> 
-                  <div style={{marginLeft:i==0?30:125}}>{x.item} </div>
+                <div  style={{borderBottom:border, display:'inline-block', width:i==0?"85%":"100%"}} key={i}> 
+                  <div style={{marginLeft:i==0?30:115}}>{x.item} </div>
                 </div>
               )
             })}
@@ -137,7 +147,7 @@ const PrintVoucehr = ({ state, companyId }) => {
             {state.descriptive && state.list.map((x, i)=>{
               return(
                 <div style={{borderBottom:border, display:'inline-block', width:"100%"}} key={i}> 
-                  <div className='text-center'>{x.amount} </div>
+                  <div className='text-center' style={{height: ` ${lineHeight(x.item)}px `}}>{x.amount} </div>
                 </div>
               )
             })}
@@ -151,7 +161,7 @@ const PrintVoucehr = ({ state, companyId }) => {
           {!state.descriptive && <Row className="p-0 m-0">
           <div style={{borderBottom:border, display:'inline-block', width:"83.2%"}} > </div>
           <div style={{borderBottom:border, borderLeft:border, display:'inline-block', width:"16.8%"}} > 
-            <div className='text-center'>{state.amount} </div>
+            <div className='text-center'  >{state.amount} </div>
             </div>
           </Row>}
 
