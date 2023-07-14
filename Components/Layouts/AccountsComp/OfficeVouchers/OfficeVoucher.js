@@ -8,6 +8,7 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import openNotification from '/Components/Shared/Notification';
 import Loader from '/Components/Shared/Loader';
+import PrintVoucher from './PrintVoucher';
 
 function recordsReducer(state, action){
     switch (action.type) {
@@ -316,7 +317,7 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
           }
         </Col>
       </Row>
-      <div className='mt-4' style={{display:'inline-block'}}>
+      <div className='mt-4 d-flex' style={{display:'inline-block'}}>
         <button type='button' className='btn-orange'
           disabled={!state.descriptive?true:false}
           onClick={()=> set({amount:calculateTotal()})}>Calculate</button>
@@ -327,6 +328,8 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
           }
         >Submit
         </button>
+        {state.approved &&  <PrintVoucher state={state}  companyId={companyId}/>}
+
       </div>
       </form>
       <Modal title={!state.approved?"Account Selection":"Disapprove"} open={state.visible} onCancel={()=>set({visible:false})} footer={false}>

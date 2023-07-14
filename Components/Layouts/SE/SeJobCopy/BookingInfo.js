@@ -19,7 +19,7 @@ import InputComp from '/Components/Shared/Form/InputComp';
 import {createNotification} from '../../../../functions/notifications'
 import Cookies from 'js-cookie';
 
-const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck, register, control, errors, state, useWatch, dispatch, reset, watch, id}) => {
+const BookingInfo = ({handleSubmit, onEdit, companyId, register, control, errors, state, useWatch, dispatch, reset, id}) => {
 
   const dispatchNew = useDispatch();
   const transportCheck = useWatch({control, name:"transportCheck"});
@@ -35,33 +35,24 @@ const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck
   const forwarderId = useWatch({control, name:"forwarderId"});
   const shippingLineId = useWatch({control, name:"shippingLineId"});
   const localVendorId = useWatch({control, name:"localVendorId"});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [title, setTitle] = useState();
+  const approved = useWatch({control, name:"approved"});
+  let allValues = useWatch({control})
 
 
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  
+   
   const handleOk = () => {
-    let allValues = watch({control})
-    allValues.approved = check ? '1' : ''
-    const data = {
-      creatorId: state.selectedRecord.createdById ,
-      type: "SE JOB", subType : allValues.jobNo, 
-      opened: 0,
-      companyId, recordId: allValues.id, createdById: Cookies.get("loginId"),
-      notification: check ?  `Job No ${allValues.jobNo} Approved`: `Job No ${allValues.jobNo} Dispproved`
-    }
-
+    allValues.approved = approved
     handleSubmit(onEdit(allValues))
-    createNotification(data)
-    setIsModalOpen(false)
+    dispatch({type:"set",payload:{
+      isModalOpen : false,
+    }})
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    dispatch({type:"set",payload:{
+      isModalOpen : false,
+    }})
   };
  
   const filterVessels = (list) => {
@@ -121,18 +112,7 @@ const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck
   }
 
 
-  const onChange = (e ) => {
-    if(e.target.checked == true) {
-      setTitle("Are You Sure You Want To Approve his Job?")
-      setCheck(true)
-      showModal()  
-    }
-    else{
-      setTitle("Are You Sure You Want To Disapprove his Job?")
-      setCheck(false)
-      showModal()
-    }
-  };
+  
   return (
   <>
     <Row>
@@ -379,11 +359,14 @@ const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck
         </div>
       </Col>
       <Col md={3}>
-        {state.edit &&<Notes state={state} dispatch={dispatch} />}
-        {console.log("approved", state.selectedRecord.approved  )}
-        {(state.selectedRecord.approved == '1' || check == true)   && <img src={'/approve.png'} height={100} />}
-        {id!="new" && <Checkbox onChange={onChange} checked={check}>Approve This Job</Checkbox>}
-       
+      {state.edit &&<Notes state={state} dispatch={dispatch} />}
+        {console.log("approved", approved  )}
+        {approved=="1" && <img src={'/approve.png'} height={100} />}
+        <div
+          onClick={()=>    dispatch({type:"set",payload:{isModalOpen : true,}}) }>
+        <CheckGroupComp register={register} name='approved'
+        control={control} label='_____________________' options={[{ label:"Approve Job", value:"1" }]} />
+        </div>
         <hr/>
         <div style={{display:"flex", flexWrap:"wrap", gap:"0.8rem"}}>
         <button className='btn-custom px-4' type="button"
@@ -425,8 +408,8 @@ const BookingInfo = ({handleSubmit, onEdit, companyId, check, approved, setCheck
     {(state.voyageVisible && approved[0]!="1") && 
       <CustomBoxSelect reset={reset} useWatch={useWatch} control={control} state={state} dispatch={dispatch}/>
     }
-      <Modal title={title} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-      
+     <Modal open={state.isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        {approved=="1" ? "Are You Sure You Want To Approve This Job? " : "Are You Sure You Want To Disapprove This Job?"}
       </Modal>
     
   </>
