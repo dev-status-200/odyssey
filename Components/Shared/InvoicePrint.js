@@ -49,7 +49,7 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
         <Col md={5}><Line/></Col>
     </Row>
     <Row style={{paddingLeft:12, paddingRight:12}}>
-        <Col md={6} style={{borderTop:border, borderRight:border, borderLeft:"2px solid black", borderBottom:border, maxHeight:70, overflow:'hidden'}} className='p-0 px-1'>
+        <Col md={6} style={{borderTop:border, borderRight:border, borderLeft:border, borderBottom:border, maxHeight:70, overflow:'hidden'}} className='p-0 px-1'>
             <div style={heading}>INVOICE TO</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.name}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.address1}</div>
@@ -57,7 +57,7 @@ const InvoicePrint = ({records, invoice, calculateTotal}) => {
             <div style={paraStyles}>{invoice.SE_Job.Client.telephone1}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client.mobile1}</div>
         </Col>
-        <Col md={6} style={{ borderRight:"2px solid black", borderTop:border, borderBottom:border, borderLeft:border, maxHeight:70, overflow:'hidden'}} className='p-1'>
+        <Col md={6} style={{  borderTop:border, borderBottom:border, borderRight:border, maxHeight:70, overflow:'hidden'}} className='p-0 px-1'>
         <div style={heading}>Shipper/Consignee</div>
             <div style={paraStyles}>{invoice.SE_Job.consignee?.name}</div>
             <div style={paraStyles}>{invoice.SE_Job.Client?.address1}</div>

@@ -17,6 +17,7 @@ import LoadingProgram from './Loading Program';
 import { useDispatch } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import Router from "next/router";
+import {createNotification} from '../../../../functions/notifications'
 
 const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData, id}) => {
   
@@ -97,6 +98,7 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData, id}) => 
     let loginId = Cookies.get('loginId');
     data.createdById = loginId;
     dispatch({type:'toggle', fieldName:'load', payload:true});
+    
     console.log(data.approved)
     setTimeout(async() => {
         await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_CREATE_SEAJOB,{
@@ -138,10 +140,22 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData, id}) => 
     data.companyId = companyId;
   
     dispatch({type:'toggle', fieldName:'load', payload:true});
+    const notification = {
+      creatorId: state.selectedRecord.createdById ,
+      type: "SE JOB", 
+      subType : data.jobNo, 
+      opened: 0,
+      companyId, 
+      recordId: data.id, 
+      createdById: Cookies.get("loginId"),
+      notification: approved[0] == '1' ?  `Job No ${data.jobNo} Approved`: `Job No ${data.jobNo} Dispproved`
+    }
     setTimeout(async() => {
         await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_EDIT_SEAJOB,{data}).then((x)=>{
           if(x.data.status=='success'){
               openNotification('Success', `Job Updated!`, 'green')
+              createNotification(notification)
+
           }else{
               openNotification('Error', `An Error occured Please Try Again!`, 'red')
           }
@@ -158,10 +172,10 @@ const CreateOrEdit = ({state, dispatch, baseValues, companyId, jobData, id}) => 
       <Tabs defaultActiveKey={state.tabState} activeKey={state.tabState}
       onChange={(e)=> dispatch({type:'toggle', fieldName:'tabState', payload:e}) }>
       <Tabs.TabPane tab="Booking Info" key="1"> 
-      <BookingInfo handleSubmit={handleSubmit} onEdit={onEdit} companyId={companyId} approved={approved} check={check} 
-        setCheck={setCheck} watch={watch} control={control} register={register} errors={errors} state={state} 
+      <BookingInfo handleSubmit={handleSubmit} onEdit={onEdit} companyId={companyId} control={control} register={register} errors={errors} state={state} 
         useWatch={useWatch} dispatch={dispatch} reset={reset} id={id}
-      />   
+      />
+  
       </Tabs.TabPane>
       {subType=="FCL" &&
       <Tabs.TabPane tab="Equipment" key="2">
