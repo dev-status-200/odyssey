@@ -57,7 +57,7 @@ const Modal = ({ getDebitCredit, state, getOpeningBalance, computedBalance }) =>
         </div>
       </div>
       <div className="d-flex justify-content-end">
-        <b>Closing Balance : {closing > 0 ? closing + " Dr" : Math.abs(closing) + " Cr" }</b>
+        <b>Closing Balance : {closing > 0 ? closing + " Dr" : Math.abs(closing) + " Cr" } </b>
       </div>
     </div>
   );

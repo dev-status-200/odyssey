@@ -146,6 +146,7 @@ const PrintVoucehr = ({ state, companyId }) => {
             <>
             {state.descriptive && state.list.map((x, i)=>{
               return(
+                
                 <div style={{borderBottom:border, display:'inline-block', width:"100%"}} key={i}> 
                   <div className='text-center' style={{height: ` ${lineHeight(x.item)}px `}}>{x.amount} </div>
                 </div>
