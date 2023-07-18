@@ -14,7 +14,6 @@ const Ledger = ({
   computedBalance,
 }) => {
   const { records, visible, load, from, to, company } = state;
-
   return (
     <div className="base-page-layout">
       <Row>

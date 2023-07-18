@@ -63,7 +63,6 @@ const Index = () => {
       await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_VOUCEHR_LEDGER_BY_DATE, {
         headers: { id: account, to: to },
       }).then((x) => {
-        console.log(x.data.result)
         if (Array.isArray(x?.data?.result)) {
           let arr = x?.data?.result.filter(
             (y) => y?.Voucher_Heads.length > 0
@@ -83,7 +82,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (childAccount.length > 0) {
+    if (childAccount.length > 0 && openingBalance == 0) {
       childAccount.forEach((x) => {
         x?.Voucher_Heads?.forEach((y) => {
           if (
@@ -98,6 +97,22 @@ const Index = () => {
         });
       });
     }
+    else if (childAccount.length > 0 && openingBalance > 0 || openingBalance < 0) {
+      childAccount.forEach((x) => {
+        x?.Voucher_Heads?.forEach((y) => {
+          if (
+            y.Voucher?.vType === "CPV" ||
+            y.Voucher?.vType === "BPV" ||
+            y.Voucher?.vType === "SI"
+          ) {
+            closingBalance  = openingBalance + parseFloat(y.amount);
+          } else {
+            closingBalance  = openingBalance - parseFloat(y.amount);
+          }
+        });
+      });
+    }
+ 
     childAccount.length > 0
     ? dispatch({
         type: "SET_DATA",

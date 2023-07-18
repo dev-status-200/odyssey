@@ -94,11 +94,13 @@ const PrintVoucehr = ({ state, companyId }) => {
             <div style={{marginTop:30}} />
             <>
             {state.descriptive && state.list.map((x, i)=>{
-            return(
-              <div style={{borderBottom:border, display:'inline-block', width:"100%"}} key={i}> 
-                <div className='text-center' style={{height:`${lineHeight(x.item)}px`}}>{x.amount}</div>
-              </div>
-            )})}
+              return(
+                
+                <div style={{borderBottom:border, display:'inline-block', width:"100%"}} key={i}> 
+                  <div className='text-center' style={{height: ` ${lineHeight(x.item)}px `}}>{x.amount} </div>
+                </div>
+              )
+            })}
             </>
             {state.descriptive && 
             <div style={{borderTop:border, display:'inline-block', width:"100%", marginBottom:"0"}} > 
