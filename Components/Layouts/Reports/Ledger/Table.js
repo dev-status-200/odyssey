@@ -57,7 +57,13 @@ const Modal = ({ getDebitCredit, state, getOpeningBalance, computedBalance }) =>
         </div>
       </div>
       <div className="d-flex justify-content-end">
-        <b>Closing Balance : {closing > 0 ? closing.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ") + " Dr" : Math.abs(closing).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ") + " Cr" } </b>
+        <b>Closing Balance : 
+          {closing > 0 ? 
+              closing.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ") + " Dr" :
+              Math.abs(closing).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ", ")
+            + " Cr" 
+          }
+          </b>
       </div>
     </div>
   );
