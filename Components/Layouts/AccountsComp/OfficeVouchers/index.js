@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import { Col, Row, Table } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import Router from 'next/router';
 
@@ -26,21 +26,21 @@ const OfficeVouchers = ({voucherList}) => {
     const set = (payload) => dispatch({type:"set", payload:payload});
 
   useEffect(() => {
-    console.log(voucherList);
-    set({records:voucherList})
+    set({records:voucherList});
+    //console.log( voucherList );
   }, [voucherList])
   
   return (
-    <div className='base-page-layout'>
+  <div className='base-page-layout'>
     <Row>
-        <Col md={11}></Col>
-        <Col md={1}>
-            <button className='btn-custom'
-                onClick={()=>{
-                    dispatchNew(incrementTab({"label":"Office Voucher","key":"3-8","id":"new"}))
-                    Router.push(`/accounts/officeVouchers/new`)
-                }}
-            >Create</button>
+        <Col md={10}>
+          <h5>Office Vouchers</h5>
+        </Col>
+        <Col md={2} style={{textAlign:'end'}}>
+          <button className='btn-custom' onClick={()=>{
+            dispatchNew(incrementTab({"label":"Office Voucher","key":"3-8","id":"new"}))
+            Router.push(`/accounts/officeVouchers/new`)
+          }}> Create </button>
         </Col>
     </Row>
     <Row>
@@ -48,7 +48,7 @@ const OfficeVouchers = ({voucherList}) => {
       <Table className='tableFixHead'>
         <thead>
           <tr>
-            <th>Sr.</th><th>Paid To</th><th>Requested By</th><th>Amount</th><th>Created By</th><th>Status</th>
+            <th>Sr.</th><th>Paid To</th><th>Requested By</th><th>Amount</th><th>Created By</th><th>Voucher No.</th><th>Status</th><th>Return Status</th>
           </tr>
         </thead>
         <tbody>
@@ -72,7 +72,19 @@ const OfficeVouchers = ({voucherList}) => {
           <td>{x.requestedBy} </td>
           <td> PKR {x.amount} </td>
           <td>{x.preparedBy} </td>
-          <td> {x.approved?<span style={{color:'green'}}>Approved</span>:<span style={{color:'silver'}}>Un-Approved</span>}</td>
+          <td className='blue-txt fw-7'>{x.approved? x.Voucher?.voucher_Id:''} </td>
+          <td className='fw-7'>{x.approved?
+              <span style={{color:'green'}}>Approved</span>:
+              <span style={{color:'silver'}}>Un-Approved</span>}
+          </td>
+          <td className='fw-7'>{
+            x.paid=="0"?
+              <span style={{color:'silver'}}>Not Paid</span>:
+            x.paid=="1"?
+              <span style={{color:'green'}}>Paid</span>:
+              <span style={{color:'orange'}}>Not Fully Paid</span>
+              }
+          </td>
         </tr>
           )
         })}
@@ -80,8 +92,7 @@ const OfficeVouchers = ({voucherList}) => {
       </Table>
     </div>
     </Row>
-    </div>
-  )
-}
+  </div>
+)}
 
 export default OfficeVouchers

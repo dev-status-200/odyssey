@@ -2,22 +2,23 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   value: {},
+  tabs:[]
 }
 
 export const counterSlice = createSlice({
   name: 'tabs',
   initialState,
   reducers: {
-    decrement: (state) => {
-      state.value -= 1
-    },
     incrementTab: (state, action) => {
       state.value = action.payload
+    },
+    setTab: (state, action) => {
+      state.tabs = action.payload
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { incrementTab } = counterSlice.actions
+export const { incrementTab, setTab } = counterSlice.actions
 
 export default counterSlice.reducer

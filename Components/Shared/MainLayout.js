@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { setAccesLevels } from '/functions/setAccesLevels';
 import logout from '/functions/logout';
+import { setTab } from '/redux/tabs/tabSlice';
 
 const { Header, Content, Sider } = Layout;
 
@@ -21,6 +22,7 @@ const MainLayout = ({children}) => {
   const [collapsed, setCollapsed] = useState(false);
   const [company, setCompany] = useState('');
   const tabs = useSelector((state) => state.tabs.value);
+  const tabItems = useSelector((state) => state.tabs.tabs);
   const dispatch = useDispatch();
   useEffect(() => { getCompanies(); }, [])
 
@@ -76,7 +78,7 @@ const MainLayout = ({children}) => {
   }, [newRouter])
 
   const [toggleState, setToggleState] = useState(0);
-  const [tabItems, setTabItems] = useState([]);
+  //const [tabItems, setTabItems] = useState([]);
 
   const [tabActive, setTabActive] = useState({
     home:false,
@@ -147,8 +149,8 @@ const MainLayout = ({children}) => {
         else if(tabs.key=='5-3'){ tempTabActive.balanceSheet=true }
         else if(tabs.key=='5-4'){ tempTabActive.jobPlReport=true }
         else if(tabs.key=='5-5'){ tempTabActive.ledger=true }
-
-        setTabItems(tempTabs);
+        dispatch(setTab(tempTabs))
+        //setTabItems(tempTabs);
         setTabActive(tempTabActive);
       }
     }
@@ -168,7 +170,8 @@ const MainLayout = ({children}) => {
         return x.key!=value.key;
       })
       tempTabes.splice(index,0,tabs);
-      setTabItems(tempTabes)
+      dispatch(setTab(tempTabes))
+      //setTabItems(tempTabes)
       result = tabs.id
     }else{
       result = value.id
@@ -212,7 +215,8 @@ const MainLayout = ({children}) => {
     tempTabs = tempTabs.filter((x)=>{
       return x.key!=index
     })
-    setTabItems(tempTabs);
+    dispatch(setTab(tempTabs))
+    //setTabItems(tempTabs);
     if(toggleState==index){
       setToggleState(0)
     }
@@ -224,8 +228,8 @@ const MainLayout = ({children}) => {
 return (
   <Layout className="main-dashboard-layout">
     {!load && 
-    <Sider trigger={null} collapsible collapsed={collapsed} className='side-menu-styles' style={{maxHeight:'100vh', overflowY:'auto'}}>
-      <div className={!collapsed?'big-logo':'small-logo'} >
+    <Sider trigger={null} collapsible collapsed={collapsed} className='side-menu-styles' style={{maxHeight:'100vh',overflowY:'auto'}}>
+      <div className={!collapsed?'big-logo':'small-logo'}>
         <span>
           <img src={company=='1'?'/seanet-logo.png':company=='3'?'/aircargo-logo.png':company=='2'?'/cargolinkers-logo.png':null}/>
           <p>Dashboard</p>
@@ -238,39 +242,22 @@ return (
     <Header className="site-layout-background" style={{padding:0}}>
     {collapsed && <span className="menu-toggler" onClick={() => setCollapsed(!collapsed)}><AiOutlineRight /></span>}
     {!collapsed && <span className="menu-toggler" onClick={() => setCollapsed(!collapsed)} ><AiOutlineLeft /></span>}
-    <Select 
-      style={{width: 155, opacity:0.7}}
-      onChange={handleChange}
-      options={companies}
-    />
+    <Select style={{width: 155, opacity:0.7}} onChange={handleChange} options={companies} />
     <span style={{float:'right'}} className='mx-5 cur' onClick={()=>logout()}> Logout </span>
     </Header>
-    <Content className=""
-      style={{
-        margin: '24px 16px',
-        padding: 0,
-        minHeight: 280,
-      }}
-    > 
+    <Content style={{ margin:'24px 16px', padding:0, minHeight:280}}> 
     <div className='dashboard-styles'>
       <div className="bloc-tabs">
         {tabItems.map((x, index)=>{
           return(
             <div key={index} className={toggleState===x.key?"tabs active-tabs":"tabs"}>
-              <button onClick={()=> {
-                toggleTab(x); 
-                }}>
-                {x.label}
-              </button>
-              <span>
-                <CloseOutlined onClick={()=>removeTab(x.key)} className='clos-btn'/>
-              </span>
+              <button onClick={()=>toggleTab(x)}> {x.label} </button>
+              <span><CloseOutlined onClick={()=>removeTab(x.key)} className='clos-btn'/></span>
             </div>
-          )
-        })}
+        )})}
       </div>
       <div className="content-tabs">
-          {children}
+        {children}
       </div>
     </div>
     </Content>

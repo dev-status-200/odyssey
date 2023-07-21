@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import { Col, Row, Spinner } from 'react-bootstrap';
 import Router from 'next/router';
 import { InputNumber, Input, Select, Checkbox, Modal } from 'antd';
@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import cookies from 'js-cookie';
 import openNotification from '/Components/Shared/Notification';
-import Loader from '/Components/Shared/Loader';
 import PrintVoucher from './PrintVoucher';
+import FullScreenLoader from '/Components/Shared/FullScreenLoader';
+import { delay } from "/functions/delay"
 
 function recordsReducer(state, action){
     switch (action.type) {
@@ -22,6 +23,9 @@ const initialState = {
   approved:false,
   visible:false,
   accountLoad:false,
+  reverse:false,
+  paid:"0",
+  reverseAmount:0,
   settlementList:[],
   settlementAccount:'',
   secondaryAccount:'',
@@ -38,10 +42,10 @@ const initialState = {
 
 const OfficeVoucher = ({voucherData, id, employeeData}) => {
 
+  const formData = useRef();
   const [ state, dispatch ] = useReducer(recordsReducer, initialState);
   const companyId = useSelector((state) => state.company.value);
-
-  const set = (payload) => dispatch({type:"set", payload:payload});
+  const set = (value) => dispatch({ type:"set",payload:value });
 
   useEffect(() => {
     if(voucherData){
@@ -49,11 +53,12 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
       if(tempState.descriptive){
         tempState.list = JSON.parse(tempState.onAcOf)
       }
-      set(tempState)
+      set(tempState);
     }
   }, [])
 
   const handleSubmit = async(e) => {
+    set({load:true})
     const preparedBy = await cookies.get("username")
     e.preventDefault();
     let tempData = {...state};
@@ -154,6 +159,7 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
   const ModalBody = () => {
 
     return(
+      <>
       <form onSubmit={handleApprove}>
         {state.accountLoad && <div className='text-center'><Spinner /></div>}
         {!state.accountLoad && 
@@ -179,8 +185,67 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
         <button type='submit' className='btn-custom mt-3'>Approve</button>
         </>}
       </form>
+      <div>
+        {state.load && <FullScreenLoader />}
+      </div>
+      </>
     )
   }
+
+  const ReverseBody = () => {
+
+    const recordReverse = async(e) => {
+      e.preventDefault();
+      set({load:true})
+      const { recievingAmount } = formData.current;
+      await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_RECORD_REVERSE,{
+        reverseAmount:parseFloat(state.reverseAmount) + parseFloat(recievingAmount.value),
+        VoucherId:state.VoucherId,
+        id:id,
+        paid:(parseFloat(state.reverseAmount) + parseFloat(recievingAmount.value) == parseFloat(state.amount))?'1':'2'
+      }).then(async(x)=>{
+        let tempVoucher = {...x.data.result};
+        if(x.data.status=="success"){
+          tempVoucher.type="Receivable";
+          tempVoucher.payTo="Company";
+          tempVoucher.vType="CRV";
+          delete tempVoucher.id;
+          delete tempVoucher.voucher_Id;
+          delete tempVoucher.voucher_No;
+          let tempType = tempVoucher.Voucher_Heads[0].type;
+          //tempVoucher.Voucher_Heads[0].type = tempVoucher.Voucher_Heads[1].type;
+          tempVoucher.Voucher_Heads[0] = {...tempVoucher.Voucher_Heads[0], type:tempVoucher.Voucher_Heads[1].type, amount:recievingAmount.value}
+          tempVoucher.Voucher_Heads[1] = {...tempVoucher.Voucher_Heads[1], type:tempType, amount:recievingAmount.value};
+
+          delete tempVoucher.Voucher_Heads[0].id
+          delete tempVoucher.Voucher_Heads[1].id
+          await axios.post(process.env.NEXT_PUBLIC_CLIMAX_CREATE_VOUCHER,tempVoucher)
+          .then((z)=>{
+            console.log(z.data)
+            if(z.data.status=="success"){
+              openNotification("Success", `Voucher updated Successfully!`, "green")
+              Router.push(`/accounts/officeVouchers/${id}`);
+            }
+          })
+        }
+      })
+    }
+
+    return(
+      <form ref={formData}>
+        <div>Amount</div>
+        <InputNumber type='number' name='recievingAmount' max={parseFloat(state.amount) - state.reverseAmount} />
+        <div className='mt-2'>Total Amount: <span style={{color:'green'}}>{state.amount} PKR</span></div>
+        <div className='mt-2'>Remaining Balance: <span style={{color:'green'}}>{parseFloat(state.amount) - state.reverseAmount} PKR</span></div>
+        <hr className='mb-0' />
+      <button type="submit" onClick={recordReverse} className='btn-custom mt-3'>Approve</button>
+      <div>
+        {state.load && <FullScreenLoader />}
+      </div>
+      </form>
+    )
+  }
+  
   const DissaproveBody = () => {
     return(
       <>
@@ -191,6 +256,7 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
         <div style={{float:'right'}}>
         <button className='btn-custom mx-3' type='button'
           onClick={async()=>{
+            set({load:true})
             await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_DELETE_VOUCHER,{
               id:state.VoucherId, type:"VoucherId Exists"
             }).then(async(x)=>{
@@ -213,13 +279,15 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
         </div>
         </div>
       </div>
+      <div>
+        {state.load && <FullScreenLoader />}
+      </div>
       </>
     )
   }
 
   return (
     <div className='base-page-layout'>
-      {/* {id} */}
       <form onSubmit={handleSubmit}>
       <Row>
         <Col md={3}>
@@ -238,20 +306,21 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
           <div>Descriptive</div>
           <Checkbox defaultChecked checked={state.descriptive} onChange={()=>set({descriptive:!state.descriptive})} />
         </Col>
-        <Col md={2} style={{border:'1px solid silver'}} className='px-3 py-2'>
+        <Col md={3} style={{border:'1px solid silver'}} className='px-3 py-2'>
           <div>Approve Voucher</div>
-          <Checkbox defaultChecked checked={state.approved} disabled={id=="new"?true:false} 
+          <Checkbox defaultChecked className='mt-2' checked={state.approved}  disabled={id=="new"?true:false} 
             onChange={()=>{
               if(state.approved){
-                set({visible:true})
-                
+                set({visible:true});
               }else{
-                set({visible:true, accountLoad:true})
+                set({visible:true, accountLoad:true});
                 getAccounts();
               }
-              //set({approved:!state.approved})
             }}
           />
+          {state.approved && <button type='button' className='btn-custom mx-3'
+            onClick={()=>set({reverse:true})}
+          >Mark Return</button>}
         </Col>
         <Col md={8} className='mt-3'>
           {state.descriptive &&
@@ -261,7 +330,6 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
             <span className='btn-custom' onClick={()=>set({list:[...state.list, {item:"", amount:0}]})}>Add</span>
           </div>
           <hr className='mt-0 pt-0' />
-          
           {state.list.map((x, i)=>{
           return(
             <Row key={i} className='mt-2'>
@@ -298,47 +366,60 @@ const OfficeVoucher = ({voucherData, id, employeeData}) => {
             </Row>
           )})}
           <div className='mt-3'>Total Amount:</div><InputNumber value={state.amount} disabled />
+          <div className='mt-3'>
+            <div>Returned</div>
+            <div style={{border:'1px solid silver', paddingTop:6, paddingBottom:3, paddingLeft:10, maxWidth:90}}>{state.reverseAmount}</div>
+          </div>
           </>
           }
           {!state.descriptive &&
           <>
-          <div>Description</div>
+            <div>Description</div>
             <Input.TextArea value={state.onAcOf} onChange={(e)=>set({onAcOf:e.target.value})} placeholder='Enter Description' 
               required={!state.descriptive?true:false}
             />
-            <div  className='mt-3'>
-              <div>Total Amount</div>
-            <InputNumber value={state.amount} placeholder='Amount' required={!state.descriptive?true:false}
-              min={0.1}
-              onChange={(e)=>set({amount:e})}
-            />
-            </div>
+            <Row>
+              <Col md={2}>
+                <div className='mt-3'>
+                  <div>Total Amount</div>
+                  <InputNumber value={state.amount} placeholder='Amount' required={!state.descriptive?true:false}
+                    min={0.1}
+                    onChange={(e)=>set({amount:e})}
+                  />
+                </div>
+                <div className='mt-3'>
+                  <div>Returned</div>
+                  <div style={{border:'1px solid silver', paddingTop:6, paddingBottom:3, paddingLeft:10}}>{state.reverseAmount}</div>
+                </div>
+              </Col>
+              <Col md={3}>
+              </Col>
+            </Row>
           </>
           }
         </Col>
       </Row>
       <div className='mt-4 d-flex' style={{display:'inline-block'}}>
-        <button type='button' className='btn-orange'
-          disabled={!state.descriptive?true:false}
-          onClick={()=> set({amount:calculateTotal()})}>Calculate</button>
+        <button type='button' className='btn-orange' disabled={!state.descriptive?true:false}
+          onClick={()=> set({amount:calculateTotal()})}
+        >Calculate</button>
         <button type='submit' className={state.approved?'btn-custom-disabled mx-4':'btn-custom mx-4'} 
-          disabled={
-            state.load?true:
-            state.approved?true:false
-          }
-        >Submit
-        </button>
+          disabled={state.load?true:state.approved?true:false}
+        >Submit</button>
         {state.approved &&  <PrintVoucher state={state}  companyId={companyId}/>}
-
       </div>
       </form>
-      <Modal title={!state.approved?"Account Selection":"Disapprove"} open={state.visible} onCancel={()=>set({visible:false})} footer={false}>
+      <Modal title={!state.approved?"Account Selection":"Disapprove" } open={state.visible} onCancel={()=>set({visible:false})} footer={false}>
         {!state.approved && <ModalBody/>}
         {state.approved && <DissaproveBody/>}
       </Modal>
-
+      <Modal title={"Record Amount"} open={state.reverse} onCancel={()=>set({reverse:false})} footer={false}>
+        {state.reverse && <ReverseBody/>}
+      </Modal>
+      <div>
+        {state.load && <FullScreenLoader />}
+      </div>
     </div>
   )
 }
-
 export default OfficeVoucher
