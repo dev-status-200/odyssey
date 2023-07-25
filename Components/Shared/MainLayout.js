@@ -75,6 +75,9 @@ const MainLayout = ({children}) => {
     if(newRouter.pathname.includes("setup/voyage")){
       setToggleState('2-4');
     }
+    if(newRouter.pathname.includes("tasks/riders/riderAssign/")){
+      setToggleState('6-2');
+    }
   }, [newRouter])
 
   const [toggleState, setToggleState] = useState(0);
@@ -106,6 +109,8 @@ const MainLayout = ({children}) => {
     officeVoucherList:false,
     officeVoucher:false,
     jobPlReport:false,
+    riders:false,
+    riderAssign:false,
     ledger:false,
   });
 
@@ -149,6 +154,8 @@ const MainLayout = ({children}) => {
         else if(tabs.key=='5-3'){ tempTabActive.balanceSheet=true }
         else if(tabs.key=='5-4'){ tempTabActive.jobPlReport=true }
         else if(tabs.key=='5-5'){ tempTabActive.ledger=true }
+        else if(tabs.key=='6-1'){ tempTabActive.riders=true }
+        else if(tabs.key=='6-1'){ tempTabActive.riderAssign=true }
         dispatch(setTab(tempTabs))
         //setTabItems(tempTabs);
         setTabActive(tempTabActive);
@@ -208,6 +215,8 @@ const MainLayout = ({children}) => {
     else if(x.key=='5-3'){ Router.push('/reports/balanceSheet') }
     else if(x.key=='5-4'){ Router.push('/reports/jobPLReport') }
     else if(x.key=='5-5'){ Router.push('/reports/ledger') }
+    else if(x.key=='6-1'){ Router.push('/tasks/riders') }
+    else if(x.key=='6-2'){ Router.push(`/tasks/riders/riderAssign/${setKey(x)}`) }
   };
 
   const removeTab = (index) => {
@@ -250,10 +259,10 @@ return (
       <div className="bloc-tabs">
         {tabItems.map((x, index)=>{
           return(
-            <div key={index} className={toggleState===x.key?"tabs active-tabs":"tabs"}>
-              <button onClick={()=>toggleTab(x)}> {x.label} </button>
-              <span><CloseOutlined onClick={()=>removeTab(x.key)} className='clos-btn'/></span>
-            </div>
+          <div key={index} className={toggleState===x.key?"tabs active-tabs":"tabs"}>
+            <button onClick={()=>toggleTab(x)}> {x.label} </button>
+              <CloseOutlined onClick={()=>removeTab(x.key)} className='clos-btn'/>
+          </div>
         )})}
       </div>
       <div className="content-tabs">

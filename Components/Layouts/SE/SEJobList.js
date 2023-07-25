@@ -21,7 +21,7 @@ const SEJobList = ({jobsData, fieldsData}) => {
     {companyId!='' &&
     <div className='base-page-layout'>
       <Row>
-        <Col><h5>Sea Export Job</h5></Col>
+        <Col><h5>Sea Export Job List</h5></Col>
         <Col>
           <button className='btn-custom right'
             onClick={()=>{

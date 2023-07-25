@@ -25,7 +25,7 @@ const SeJob = ({partiesData, BlsData}) => {
     {companyId!='' &&
     <div className='base-page-layout'>
       <Row>
-        <Col><h5>Sea Export Job</h5></Col>
+        <Col><h5>SE Bill of Lading List</h5></Col>
         <Col>
           <button className='btn-custom right' 
             //onClick={()=>dispatch({type:'create'})}

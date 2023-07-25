@@ -2,11 +2,7 @@
 import axios from "axios";
 import { Table, Row, Col, Spinner } from 'react-bootstrap';
 
-
-// import SeJobCopy from '../../../Components/Layouts/SE/SeJobCopy';
-
 const riderID = ({riderData, tasks}) => {
-  console.log(tasks)
   return (
     <div className='dashboard-styles'>
     <div className='base-page-layout'>

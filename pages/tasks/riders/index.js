@@ -1,16 +1,17 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import { Table, Row, Col, Spinner } from 'react-bootstrap';
-import MediumModal from '../..//Components/Shared/Modals/MediumModal';
-import CreateOrEdit from '../../Components/Layouts/Setup/Employees/CreateOrEdit';
+import MediumModal from '/Components/Shared/Modals/MediumModal';
+import CreateOrEdit from '/Components/Layouts/Setup/Employees/CreateOrEdit';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import { Input, Empty, Radio, Modal } from 'antd';
-import InputComp from '../../Components/Shared/Form/InputComp'
+import { LuBike } from "react-icons/lu";
+import InputComp from '/Components/Shared/Form/InputComp'
 import { useForm } from 'react-hook-form';
 import cookies from 'js-cookie';
-import openNotification from '../../Components/Shared/Notification';
+import openNotification from '/Components/Shared/Notification';
 
 const initialState = {
   riders: [],
@@ -38,7 +39,7 @@ const Employees = ({}) => {
   const [state, dispatch] = useReducer(reducers, initialState)
   const company = useSelector((state) => state.company.companies);
   const { register, control, handleSubmit, reset } = useForm({});
-
+  const dispatchNew = useDispatch();
 
   const getEmployees = async() => {
     console.log("Function Hit")
@@ -85,24 +86,18 @@ const Employees = ({}) => {
       {state.riders.length>0 && <Col md={12}>
       <div className='' style={{maxHeight:500, overflowY:'auto'}}>
         <Table className='tableFixHead'>
-        <thead><tr><th>Sr.</th><th>Code</th><th>Basic Info</th><th>Company Info</th><th>Bank Info</th><th>History</th></tr></thead>
+        <thead><tr><th>Name</th><th>Contact</th><th>Current Status</th></tr></thead>
         <tbody>
         {state.riders.map((x, index) => {
         return (
         <tr key={index} className='f row-hov'
           onClick={()=>{
-            dispatch({type:"SET_DATA", payload: {EmployeeId : x.id, visible :true}})
+            dispatchNew(incrementTab({"label":"Rider Tasks List","key":"6-2","id":x.id}))
+            Router.push(`/tasks/riders/riderAssign/${x.id}`)
         }}>
-          <td>{index + 1}</td>
-          <td><span className='blue-txt fw-5'>{x.code}</span></td>
-          <td>Name: <span className='blue-txt fw-5'>{x.name}</span><br/>Contact: {x.contact}<br/>CNIC: {x.cnic}</td>
-          <td>Dpt: {x.department}<br/>Designation: {x.designation}<br/>Manager: {x.manager}</td>
-          <td>Name: {x.bank}<br/>No: {x.account_no}<br/></td>
-          <td>
-            Creator: <span className='blue-txt fw-5'>{x.createdBy}</span>
-            <br/>
-            Modifier: <span className='grey-txt fw-5'>{x.updatedBy==null?'( )':x.updatedBy}</span>
-          </td>
+          <td className='blue-txt fw-5 fs-18'><LuBike/> <span className='mx-2'> {x.name}</span></td>
+          <td>{x.contact}</td>
+          <td></td>
         </tr>
         )})}
         </tbody>
@@ -112,38 +107,33 @@ const Employees = ({}) => {
       {state.riders.length == 0 && <div className='p-5 text-center'><Spinner/></div>}
       </Row>
     </div>
-    <Modal open={state.visible} onOk={() => dispatch({type:"SET_DATA", payload: { visible :true}})} onCancel={() => dispatch({type:"SET_DATA", payload: { visible :false}})}
-            width={"50%"}
-            footer={false}
-            centered={false}
-          >
-
-<form onSubmit={handleSubmit(onSubmit)}>
-   
-        <Row>
-                <Col md={12}>
-                <InputComp register={register} name='title' control={control} label='Title' />
-           
-                </Col>
-            <Col md={12} className='py-1'>
-                <InputComp  register={register} name='details' control={control} label='Details' />
-           
-            </Col>
-
-
-        </Row>
-
+    {/* <Modal open={state.visible} 
+      onOk={() => dispatch({type:"SET_DATA", payload:{ visible:true}})} 
+      onCancel={() => dispatch({type:"SET_DATA", payload: { visible :false}})}
+      width={"50%"}
+      footer={false}
+      centered={false}
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+      <Row>
+        <Col md={12}>
+        <InputComp register={register} name='title' control={control} label='Title' />
+        </Col>
+        <Col md={12} className='py-1'>
+          <InputComp  register={register} name='details' control={control} label='Details' />
+        </Col>
+      </Row>
       <hr/>
       <button type="submit"  className='btn-custom'>
         { !state.load ? `Assign Task` : <Spinner/> }
       </button>
-      <button type="button"  className='btn-custom mx-1'  onClick={()=>{
-                Router.push(`/riders/riderAssign/${state.EmployeeId}`)
+        <button type="button"  className='btn-custom mx-1'  onClick={()=>{
+          
         }}>
         View Task
       </button>
       </form>
-          </Modal>
+    </Modal> */}
   </div>
   )
 }

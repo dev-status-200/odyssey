@@ -27,23 +27,25 @@ const Main = ({sessionData}) => {
                     let parentAccounts = [];
                     let tempAccounts = [];
                     await data.forEach((x,i)=>{
-                        if(i<=1681){
+                        if(i<1590){
                             tempAccounts.push({
                                 code:x[0]?.trim(),
                                 title:x[2]?.trim(),
                                 account:x[4]?.trim(),
-                                group:x[3]?.trim()
+                                group:x[3]?.trim(),
+                                type:x[5]?.trim()
                             })
                         }else{
                             return;
                         }
                     })
                     tempAccounts.forEach((x)=>{
-                        if(x.group=="Group"){
+                        if(x.group=="Group" && x.type!='Customer' && x.type!='Customer/Vendor' && x.type!='Vendor'){
                             parentAccounts.push({
                                 title:x.title,
                                 editable:"1",
-                                CompanyId:3,
+                                CompanyId:1,
+                                type:x.type,
                                 AccountId:
                                     x.account=="Asset"?
                                     3:
@@ -55,9 +57,10 @@ const Main = ({sessionData}) => {
                                     2:5,
                                  childs:[],
                             })
-                        }else if(x.group!="Group" && parentAccounts.length>0){
+                        }else if(x.group!="Group" && parentAccounts.length>0 && x.type!='Customer' && x.type!='Customer/Vendor' && x.type!='Vendor'){
                             parentAccounts[parentAccounts.length-1].childs.push({
                                 title:x.title,
+                                type:x.type,
                                 editable:"1"
                             });
                         }

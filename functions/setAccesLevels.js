@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { incrementTab } from '/redux/tabs/tabSlice';
-import { AccountBookOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
+import { AccountBookOutlined, HomeOutlined, SettingOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { RiShipLine } from "react-icons/ri";
@@ -130,6 +130,15 @@ function setAccesLevels(dispatch, collapsed){
       }),
     ]
     )
+    const tasks = getParentItem('Tasks', '6', <UnorderedListOutlined  />,
+    [
+      getItem('Riders List', '6-1',<></>, null, {
+        label: `Riders List`,
+        key: '6-1',
+        children: `Content of Tab Pane 2`,
+      }),
+    ]
+    )
     function getParentItem(label, key, icon, children) {
         return { key, icon, children, label}
     }
@@ -191,6 +200,7 @@ function setAccesLevels(dispatch, collapsed){
     ]:null
     Cookies.set("permissions", JSON.stringify(obj));
     items.unshift(dashboard)
+    items.push(tasks)
     return items
 }
 
