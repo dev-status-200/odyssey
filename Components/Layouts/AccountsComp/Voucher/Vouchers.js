@@ -32,6 +32,7 @@ const Vouchers=({handleSubmit, onSubmit, register, control, errors, CompanyId, c
 
   async function getValues(){
     const { chequeNo, costCenter, payTo, vType, type } = voucherData;
+    console.log(voucherData)
     let id="";
     let settleId="";
     let ChildAccountId = "";
@@ -93,7 +94,7 @@ const Vouchers=({handleSubmit, onSubmit, register, control, errors, CompanyId, c
             <Row>
             <Col md={6}>
               <div>Voucher No.</div>
-              <div style={box}></div>
+              <div style={box}>{voucherData?.voucher_Id||""}</div>
             </Col>
             <Col md={3}>
               <div>Date</div>
