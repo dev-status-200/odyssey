@@ -33,19 +33,19 @@ const Main = ({sessionData}) => {
                                 title:x[2]?.trim(),
                                 account:x[4]?.trim(),
                                 group:x[3]?.trim(),
-                                type:x[5]?.trim()
+                                subCategory:x[5]?.trim()
                             })
                         }else{
                             return;
                         }
                     })
                     tempAccounts.forEach((x)=>{
-                        if(x.group=="Group" && x.type!='Customer' && x.type!='Customer/Vendor' && x.type!='Vendor'){
+                        if(x.group=="Group" ){
                             parentAccounts.push({
                                 title:x.title,
                                 editable:"1",
                                 CompanyId:1,
-                                type:x.type,
+                                subCategory:x.subCategory,
                                 AccountId:
                                     x.account=="Asset"?
                                     3:
@@ -53,14 +53,14 @@ const Main = ({sessionData}) => {
                                     4:
                                     x.account=="Expense"?
                                     1:
-                                    x.account=="REVENUE"?
+                                    x.account=="Income"?
                                     2:5,
                                  childs:[],
                             })
-                        }else if(x.group!="Group" && parentAccounts.length>0 && x.type!='Customer' && x.type!='Customer/Vendor' && x.type!='Vendor'){
+                        }else if(x.group!="Group" && parentAccounts.length>0){
                             parentAccounts[parentAccounts.length-1].childs.push({
                                 title:x.title,
-                                type:x.type,
+                                subCategory:x.subCategory,
                                 editable:"1"
                             });
                         }

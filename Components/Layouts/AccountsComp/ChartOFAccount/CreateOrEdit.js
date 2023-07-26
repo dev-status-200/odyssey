@@ -102,7 +102,7 @@ const CreateOrEdit = ({state, dispatch, getAccounts}) => {
             </Select>
             </Form.Item>
         </Col>
-        <Col md={6}>
+        <Col md={4}>
             <Form.Item>
             <span>Sub Account</span>
             <Select placeholder="Select" disabled={state.isParent||state.edit} value={state.selectedParentId} onChange={(e)=>{
@@ -115,6 +115,20 @@ const CreateOrEdit = ({state, dispatch, getAccounts}) => {
                         <Select.Option key={index} value={x.id}>{x.title}</Select.Option>
                     )
                 })}
+            </Select>
+            </Form.Item>
+        </Col>
+        <Col md={4}>
+            <Form.Item>
+            <span>Sub Category</span>
+            <Select placeholder="Select Sub Category" disabled={state.isParent||state.edit} value={state.subCategory} onChange={(e)=>{
+                dispatch({type:'toggle', fieldName:'subCategory', payload:e})
+            }}>
+                <Select.Option value={"General"}>General</Select.Option>
+                <Select.Option value={"Cash"}>Cash</Select.Option>
+                <Select.Option value={"Bank"}>Bank</Select.Option>
+                <Select.Option value={"COGS"}>COGS</Select.Option>
+                <Select.Option value={"Admin Expense"}>Admin Expense</Select.Option>
             </Select>
             </Form.Item>
         </Col>

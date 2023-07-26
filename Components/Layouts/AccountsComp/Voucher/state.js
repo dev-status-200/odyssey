@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 export const validationSchema = yup.object().shape({
   vType: yup.string().required('VType is required'),
-  payTo: yup.string().required('Pay To is required'),
+  //payTo: yup.string().required('Pay To is required'),
   costCenter: yup.string().required('Cost Center is required'),
   ChildAccountId: yup.string().required('Account is required'),
   Voucher_Heads: yup
@@ -13,7 +13,7 @@ export const validationSchema = yup.object().shape({
       // Example:
       ChildAccountId: yup.string().required('Account is required'),
       amount: yup.number().required('Amount is required'),
-      narration: yup.string().required('Narration is required'),
+      //narration: yup.string().required('Narration is required'),
     })
   )
   .required('Voucher Heads is required'),

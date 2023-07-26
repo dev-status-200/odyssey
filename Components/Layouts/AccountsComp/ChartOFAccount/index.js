@@ -46,6 +46,7 @@ const initialState = {
     selectedParentId:'',
     title:'',
     isParent:false,
+    subCategory:"General",
     parentRecords: [],
     
     // Editing Records
@@ -161,7 +162,7 @@ return (
         })}
         </Row>
         <Modal open={visible} onOk={() => dispatch({ type: 'modalOff' })} onCancel={() => dispatch({ type: 'modalOff' })}
-            width={500}
+            width={600}
             footer={false}
             centered={false}
         >

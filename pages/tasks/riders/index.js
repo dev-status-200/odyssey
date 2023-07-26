@@ -27,12 +27,10 @@ const reducers = (state, action) => {
         ...state,
         ...action.payload,
       };
-
     default:
       return state;
   }
 }
-
 
 const Employees = ({}) => {
 
@@ -51,8 +49,7 @@ const Employees = ({}) => {
   }
 
   useEffect(() => {
-    getEmployees();
-    return () => { }
+    getEmployees()
   }, [])
 
   const onSubmit = async(data) => {

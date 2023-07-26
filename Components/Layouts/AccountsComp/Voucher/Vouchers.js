@@ -11,7 +11,7 @@ import { Row, Col } from "react-bootstrap";
 import moment from "moment";
 import axios from "axios";
 
-const Vouchers=({handleSubmit,onSubmit, register,control, errors,CompanyId, child,settlement, reset,voucherData, setSettlement, setChild,load})=>{
+const Vouchers=({handleSubmit, onSubmit, register, control, errors, CompanyId, child,settlement, reset,voucherData, setSettlement, setChild,load})=>{
 
   const { fields, append, remove } = useFieldArray({
     name: "Voucher_Heads",
@@ -24,7 +24,7 @@ const Vouchers=({handleSubmit,onSubmit, register,control, errors,CompanyId, chil
   const allValues = useWatch({control});
   const [approveLoad, setApproveLoad] = useState(false);
   const [approve, setApprove] = useState(false);
-
+  
   useEffect(() => { getValues(); }, []);
   useEffect(() => {
     getAccounts();
@@ -83,11 +83,60 @@ const Vouchers=({handleSubmit,onSubmit, register,control, errors,CompanyId, chil
     }
   };
 
+  const box = {border:'1px solid silver', paddingLeft:10, paddingTop:5, paddingBottom:3, minHeight:31}
   return (
     <>
     <div className="base-page-layout">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
+          <Col md={7}>
+            <Row>
+            <Col md={6}>
+              <div>Voucher No.</div>
+              <div style={box}></div>
+            </Col>
+            <Col md={3}>
+              <div>Date</div>
+              <div style={box}>{moment().format("YYYY-MM-DD")}</div>
+            </Col>
+            <Col md={3}>
+              <SelectSearchComp label="Type" name="vType" register={register} control={control} width={"100%"}
+                options={[
+                  { id: "CPV", name: "CPV" },
+                  { id: "CRV", name: "CRV" },
+                  { id: "BRV", name: "BRV" },
+                  { id: "BPV", name: "BPV" },
+                ]}
+              />
+            </Col>
+            <Col md={12} className="my-2">
+              <div >Company</div>
+              <div style={box}>{ CompanyId==1?"SEANET SHIPPING & LOGISTICS":CompanyId==2?"CARGO LINKERS":"AIR CARGO SERVICES" }</div>
+            </Col>
+            <Col md={12}>
+              <SelectSearchComp className="form-select" name="ChildAccountId" label="Settlement Account" register={register} control={control} width={"100%"}
+                options={
+                  settlement.length>0?settlement.map((x)=>{
+                    return { id: x?.id, name: x?.title };
+                  }):[]
+                }
+              />
+            </Col>
+            <Col md={5} className="my-2">
+              <InputComp className="form-control" name={"chequeNo"} label="Cheque No" placeholder="Cheque No" register={register} control={control} />
+            </Col>
+            <Col md={2}></Col>
+            <Col md={5} className="my-2">
+              <DateComp register={register} name="chequeDate" label="Cheque Date" control={control} width={"100%"} />
+            </Col>
+            <Col md={12}>
+              <InputComp name="payTo" label="Pay/Recieve To" register={register} control={control} width={"100%"} />
+              <p className="error-line">{errors?.payTo?.message}</p>
+            </Col>
+            </Row>
+          </Col>
+        </Row>
+        {/* <Row>
           <Col md={3}>
             <SelectSearchComp label="Voucher Type" name="vType" register={register} control={control} width={"100%"}
               options={[
@@ -101,8 +150,7 @@ const Vouchers=({handleSubmit,onSubmit, register,control, errors,CompanyId, chil
           </Col>
           <Col md={3}>
             <div>Pay Type</div>
-            <div style={{border:'1px solid silver', paddingLeft:10, paddingTop:5, paddingBottom:3}}>{allValues.type}</div>
-            {/* <InputComp name="type" label="Job type" width={"100%"} disabled={true} control={control}{...register("type")} /> */}
+            <div style={{border:'1px solid silver', paddingLeft:10, paddingTop:5, paddingBottom:3, minHeight:30}}>{allValues.type}</div>
           </Col>
           <Col md={3}>
             <SelectComp className="form-select" name="costCenter" label="Cost Center" register={register} control={control} width={"100%"}
@@ -133,8 +181,8 @@ const Vouchers=({handleSubmit,onSubmit, register,control, errors,CompanyId, chil
           <Col md={3}>
             <InputComp className="form-control" name={"chequeNo"} label="Cheque No" placeholder="Cheque No" register={register} control={control} />
           </Col>
-        </Row>
-        <button type="button" className="btn-custom mb-3" style={{width:"170px"}}
+        </Row> */}
+        <button type="button" className="btn-custom mb-3" style={{width:"110px", float:'right'}}
           onClick={()=>append({type:allValues.vType==("BRV"||"CRV")?"credit":"debit", ChildAccountId:"", narration:"", amount:0})}
         >Add
         </button>

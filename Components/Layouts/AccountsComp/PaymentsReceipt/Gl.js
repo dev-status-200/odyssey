@@ -112,7 +112,7 @@ const Gl = ({state, dispatch, selectedParty, partytype, payType, companyId, invo
           {state.transactionCreation.map((x, index) => {
           return (
               <tr key={index}>
-                <td>{x.particular.title}</td>
+                <td>{x.particular?.title}</td>
                 <td className='text-end'>{x.tran.type!="credit"?<><span className='gl-curr-rep'>{" "}</span>{commas(x.tran.defaultAmount)}</>:''}</td>
                 <td className='text-end'>{x.tran.type=="credit"?<><span className='gl-curr-rep'>{" "}</span>{commas(x.tran.defaultAmount)}</>:''}</td>
                 <td className='text-end'>{x.tran.type!="credit"?<><span className='gl-curr-rep'>Rs.{" "}</span>{commas(x.tran.amount)}</>:''}</td>
