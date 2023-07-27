@@ -21,7 +21,9 @@ const Main = ({sessionData}) => {
         {companyId==3 && <AWBCalculator/>}
         {companyId!=3 && 
           <div>
-            {/* Select & Add Tabs to get Started */}
+            {/* <>
+            Account List Importer
+            <hr/>
             <CSVReader 
                 onFileLoaded={async(data, fileInfo, originalFile) => {
                     let parentAccounts = [];
@@ -68,6 +70,31 @@ const Main = ({sessionData}) => {
                     console.log(parentAccounts);
                 }}
             />
+            </> */}
+            <>
+            Parties List Importer
+            <hr/>
+            <CSVReader 
+              onFileLoaded={async(data, fileInfo, originalFile) => {
+                let parentAccounts = [];
+                let tempAccounts = [];
+                await data.forEach((x,i)=>{
+                  if(i<2517){
+                    tempAccounts.push({
+                      PartyTypeId:x[0]?.trim(),
+                      code:x[1]?.trim(),
+                      account:x[4]?.trim(),
+                      group:x[3]?.trim(),
+                      subCategory:x[5]?.trim()
+                    })
+                  } else {
+                    return;
+                  }
+                })
+                console.log(tempAccounts);
+              }}
+            />
+            </>
           </div>
         }
       </Row>
