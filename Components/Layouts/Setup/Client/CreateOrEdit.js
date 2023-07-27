@@ -19,21 +19,21 @@ import Router from 'next/router';
 const SignupSchema = yup.object().shape({
     // code: yup.string().required('Required'),
     name: yup.string().required('Required'),
-    registerDate: yup.string().required('Required'),
-    bankAuthorizeDate: yup.string(),
-    person1: yup.string().required('Required'),
+    //registerDate: yup.string().required('Required'),
+    //bankAuthorizeDate: yup.string(),
+    //person1: yup.string().required('Required'),
     //person2: yup.string().required('Required'),
-    mobile1:yup.string().min(11, 'Must be 11 Digits!').max(11, 'Must be 11 Digits!').required('Required'),
+    //mobile1:yup.string().min(11, 'Must be 11 Digits!').max(11, 'Must be 11 Digits!').required('Required'),
     //mobile2:yup.string().min(11, 'Must be 11 Digits!').max(11, 'Must be 11 Digits!').required('Required'),
     //ntn: yup.string().required('Required'),
     //strn: yup.string().required('Required'),
-    address1: yup.string().required('Required'),
+    //address1: yup.string().required('Required'),
     //address2: yup.string().required('Required'),
-    city: yup.string().required('Required'),
+    //city: yup.string().required('Required'),
     //zip: yup.string().required('Required'),
     //telephone1: yup.string().required('Required'),
     //telephone2: yup.string().required('Required'),
-    infoMail: yup.string().email('Must be an E-mail!').required('Required'),
+    //infoMail: yup.string().email('Must be an E-mail!').required('Required'),
     //accountsMail: yup.string().email('Must be an E-mail!').required('Required'),
     types: yup.array().required('Atleast 1 Type Required!').min(1, "Atleast 1 Type Required!"),
     operations: yup.array().required('Atleast 1 Operation Required!').min(1, "Atleast 1 Operation Required!"),
@@ -127,7 +127,7 @@ const CreateOrEdit = ({state, dispatch, baseValues, clientData, id}) => {
 
     return (
     <div className='client-styles' style={{maxHeight:720, overflowY:'auto', overflowX:'hidden'}}>
-      <h6>{state.edit?'Edit':'Create'}</h6>
+      <h5>{state.edit?'Edit Client':'Create Client'}</h5>
       <form onSubmit={handleSubmit(id!="new"?onEdit:onSubmit, onError)}>
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Basic Info" key="1">

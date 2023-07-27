@@ -129,11 +129,6 @@ const Client = ({id, representativeData, clientData}) => {
 
   return (
     <div className='base-page-layout'>
-    <Row>
-        <Col><h5>Clients</h5></Col>
-        <Col><button className='btn-custom right' onClick={()=>dispatch({type:'create'})}>Create</button></Col>
-    </Row>
-    <hr className='my-2' />
       <CreateOrEdit state={state} dispatch={dispatch} baseValues={baseValues} clientData={clientData} id={id} />
     </div>
   )

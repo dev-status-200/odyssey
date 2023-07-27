@@ -96,7 +96,7 @@ const Client = ({sessionData, clientData}) => {
             <th>Contact Persons</th>
             <th>Telephones</th>
             <th>Address</th>
-            <th>History</th>
+            {/* <th>History</th> */}
           </tr>
         </thead>
         <tbody>
@@ -112,11 +112,11 @@ const Client = ({sessionData, clientData}) => {
             <td> {x.person1} {x.mobile1}<br/> {x.person2} {x.mobile2}<br/> </td>
             <td> {x.telephone1}<br/>{x.telephone2}</td>
             <td> {x.address1?.slice(0,30)}<br/> {x.address2?.slice(0,30)}<br/> </td>
-            <td>
+            {/* <td>
               Created By: <span className='blue-txt fw-5'>{x.createdBy}</span> <br/>
               <span className='' style={{position:'relative', top:2}}>Load History</span>
               <HistoryOutlined onClick={()=>getHistory(x.id,'client')} className='modify-edit mx-2' />
-            </td>
+            </td> */}
           </tr>
           )
         })}
