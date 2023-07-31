@@ -1,10 +1,11 @@
 import { Row, Col, Table } from 'react-bootstrap';
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Router from 'next/router';
 import { HistoryOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import axios from 'axios';
+import {Select} from 'antd'
 
 function recordsReducer(state, action){
     switch (action.type) {
@@ -45,7 +46,9 @@ function recordsReducer(state, action){
 }
 
 const initialState = {
-  records: []
+  records: [],
+  searchClient : '',
+  allClients : []
 };
 
 const Client = ({sessionData, clientData}) => {
@@ -54,7 +57,9 @@ const Client = ({sessionData, clientData}) => {
   useEffect(()=>{ if(sessionData.isLoggedIn==false){Router.push('/login');} setRecords(); }, [sessionData]);
 
   const [ state, dispatch ] = useReducer(recordsReducer, initialState);
-  const { records } = state;
+  const { records, allClients } = state;
+  const [searchBy , setSearchBy] = useState()
+
 
   const getHistory = async(recordid,type) => {
     dispatch({type:'toggle', fieldName:'load', payload:true});
@@ -70,14 +75,49 @@ const Client = ({sessionData, clientData}) => {
   }
 
   const setRecords = () => {
+    
     dispatch({type:'toggle', fieldName:'records', payload:clientData.result});
+    dispatch({type:'toggle', fieldName:'allClients', payload:clientData.result});
+
   }
+const searchClient = () => {
+  const data = searchBy == 'name' ? allClients.filter((x) => x.name == state.searchClient) : allClients .filter((x) => x.code == state.searchClient  )
+  dispatch({type:'toggle', fieldName:'records', payload:data});
+
+}
+
+const onSearch = (event) => {
+  console.log("search :", event )
+}
 
   return (
     <div className='base-page-layout'>
     <Row>
-        <Col><h5>Clients</h5></Col>
-        <Col>
+    <Col md={3}><h5>Clients</h5></Col>
+        <Col md={7} style={{display:"inline-block"}}><span>Search By :</span>
+        <Select placeholder="Search"
+    onChange={(e) => setSearchBy(e)}
+    style={{width:"150px", marginLeft:"5px"}}
+    options={[{value : "code", label:"Code"},{value : "name", label:"Name"}]}/>
+
+    <Select
+    showSearch
+    style={{width:"290px", marginLeft:"5px"}}
+    placeholder={searchBy == 'name' ? "Type Name" : "Type Code"}
+    onChange={(e) => 
+      dispatch({type:'toggle', fieldName:'searchClient', payload: e })}
+    onSearch={onSearch}
+    filterOption={(input, option) =>
+      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+    }
+    options={allClients.map((x) => {
+     return (searchBy == 'name' ? {value : x.name , label : x.name} : {value : x.code , label : x.code})
+    })}/>
+        <button className='btn-custom right' 
+          onClick={()=> searchClient() }>Search</button>
+        </Col>
+
+        <Col md={2}>
         <button className='btn-custom right' 
           onClick={()=>{
             dispatchNew(incrementTab({"label":"Client","key":"2-7","id":"new"}));
@@ -92,6 +132,7 @@ const Client = ({sessionData, clientData}) => {
         <Table className='tableFixHead'>
         <thead>
           <tr>
+          <th>Code</th>
             <th>Name</th>
             <th>Contact Persons</th>
             <th>Telephones</th>
@@ -108,6 +149,7 @@ const Client = ({sessionData, clientData}) => {
               Router.push(`/setup/client/${x.id}`);
             }}
           >
+            <td> <span className=''>{x.code}</span></td>
             <td> <span className='blue-txt fw-7'>{x.name}</span></td>
             <td> {x.person1} {x.mobile1}<br/> {x.person2} {x.mobile2}<br/> </td>
             <td> {x.telephone1}<br/>{x.telephone2}</td>
