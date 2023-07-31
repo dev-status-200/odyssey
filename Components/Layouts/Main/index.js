@@ -22803,7 +22803,7 @@ const Main = ({sessionData}) => {
         {companyId==3 && <AWBCalculator/>}
         {companyId!=3 && 
           <div>
-            <>
+            {/* <>
             Account List Importer
             <hr/>
             <CSVReader 
@@ -22852,9 +22852,9 @@ const Main = ({sessionData}) => {
                     console.log(parentAccounts);
                 }}
             />
-            </>
+            </> */}
 
-            {/* 
+            
             <>
             Parties List Importer
             <hr/>
@@ -22863,7 +22863,7 @@ const Main = ({sessionData}) => {
                 let parentAccounts = [];
                 let tempAccounts = [];
                 await data.forEach((x,i) => {
-                  if(i<2517 && i>0 && (x[0]=='1'||x[0]=='3')){
+                  if(i<2517 && i>0 && (x[0]=='2'||x[0]=='3'||x[0]=='4')){
                     tempAccounts.push({
                       PartyTypeId:x[0]?.trim(),
                       code:x[2]?.trim(),
@@ -22920,7 +22920,7 @@ const Main = ({sessionData}) => {
               }}
             />
             </> 
-            */}
+           
 
 
             
