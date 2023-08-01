@@ -73,13 +73,13 @@ const InvoiceCharges = ({data, companyId}) => {
                 if(y.title.endsWith("INCOME")){ 
                     income = y
                 } else { 
-                    exp = y 
+                    exp = y
                 }
             })
         }
     });
     await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_ALL_SE_JOB_CLIENT_CHILDS,{
-        headers:{ title:tempInv.payType=="Recievable"?"Accounts Recievable":"Accounts Payble", companyid:companyId, clientid:tempInv.party_Id, partytype:tempInv.partyType }
+        headers:{ title:tempInv.payType=="Recievable"?"ACCOUNT RECEIVABLE":"ACCOUNT PAYABLE", companyid:companyId, clientid:tempInv.party_Id, partytype:tempInv.partyType }
     }).then((x)=>{
         party = x.data.result
     });
@@ -197,6 +197,7 @@ const InvoiceCharges = ({data, companyId}) => {
             ChildAccountId:income.id
         })
     }
+    console.log(vouchers)
     await axios.post(process.env.NEXT_PUBLIC_CLIMAX_POST_INVOICE_APPROVE_DISAPPROVE,{
         id:tempInv.id,
         total:tempInv.total,
@@ -206,7 +207,7 @@ const InvoiceCharges = ({data, companyId}) => {
     }).then(async(x)=>{
         if(x.data.status=="success"){
             openNotification("Success", "Invoice Successfully Approved!", "green")
-            setInvoice(tempInv);
+            //setInvoice(tempInv);
             if(tempInv.approved=="1"){
                 await axios.post(process.env.NEXT_PUBLIC_CLIMAX_CREATE_VOUCHER, vouchers);
             }else{

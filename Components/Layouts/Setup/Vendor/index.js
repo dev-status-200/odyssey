@@ -65,6 +65,7 @@ const Vendor = ({sessionData, vendorData}) => {
   }, [])
 
   const setRecords = () => {
+    console.log(vendorData.result)
     dispatch({type:'toggle', fieldName:'records', payload:vendorData.result});
   }
 
@@ -132,14 +133,11 @@ const Vendor = ({sessionData, vendorData}) => {
               {x.telephone2}
             </td>
             <td>
-              {x.address1.slice(0,30)}<br/>
-              {x.address2.slice(0,30)}<br/>
+              {x.address1?.slice(0,30)}<br/>
+              {x.address2?.slice(0,30)}<br/>
             </td>
             <td>
               Created By: <span className='blue-txt fw-5'>{x.createdBy}</span>
-              <br/>
-              <span className='' style={{position:'relative', top:2}}>Load History</span>
-              <HistoryOutlined onClick={()=>getHistory(x.id,'vendor')} className='modify-edit mx-2' />
             </td>
           </tr>
           )
