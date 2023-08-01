@@ -51,31 +51,23 @@ const initialState = {
   allClients : []
 };
 
-const Client = ({sessionData, clientData}) => {
+const Index = ({ clientData, sessionData}) => {
   const dispatchNew = useDispatch();
   
-  useEffect(()=>{ if(sessionData.isLoggedIn==false){Router.push('/login');} setRecords(); }, [sessionData]);
+  useEffect(()=>{
+     if(sessionData.isLoggedIn==false)
+     {Router.push('/login');} 
+     setRecords(); }, 
+     [sessionData]);
 
   const [ state, dispatch ] = useReducer(recordsReducer, initialState);
   const { records, allClients } = state;
   const [searchBy , setSearchBy] = useState()
 
 
-  const getHistory = async(recordid,type) => {
-    dispatch({type:'toggle', fieldName:'load', payload:true});
-    dispatch({ type: 'history'})
-    await axios.get(process.env.NEXT_PUBLIC_CLIMAX_GET_HISTORY,{
-      headers:{ recordid:recordid, type:type }
-    }).then((x)=>{
-      setTimeout(async() => {
-        dispatch({type:'toggle', fieldName:'load', payload:false});
-        dispatch({type:'toggle', fieldName:'history', payload:x.data.result});
-    }, 2000);
-    })
-  }
+  
 
   const setRecords = () => {
-    
     dispatch({type:'toggle', fieldName:'records', payload:clientData.result});
     dispatch({type:'toggle', fieldName:'allClients', payload:clientData.result});
 
@@ -93,7 +85,7 @@ const onSearch = (event) => {
   return (
     <div className='base-page-layout'>
     <Row>
-    <Col md={3}><h5>Clients</h5></Col>
+    <Col md={3}><h5>Non Gl Parties</h5></Col>
         <Col md={7} style={{display:"inline-block"}}><span>Search By :</span>
         <Select placeholder="Search"
     onChange={(e) => setSearchBy(e)}
@@ -120,8 +112,8 @@ const onSearch = (event) => {
         <Col md={2}>
         <button className='btn-custom right' 
           onClick={()=>{
-            dispatchNew(incrementTab({"label":"Client","key":"2-7","id":"new"}));
-            Router.push(`/setup/client/new`);
+            // dispatchNew(incrementTab({"label":"Client","key":"2-7","id":"new"}));
+            Router.push(`/setup/nonGlParties/new`);
         }}>Create</button>
         </Col>
     </Row>
@@ -145,8 +137,8 @@ const onSearch = (event) => {
           return (
           <tr key={index} className='f row-hov'
             onClick={()=>{
-              dispatchNew(incrementTab({"label":"Client","key":"2-7","id":x.id}));
-              Router.push(`/setup/client/${x.id}`);
+            //   dispatchNew(incrementTab({"label":"Client","key":"2-7","id":x.id}));
+              Router.push(`/setup/nonGlParties/${x.id}`);
             }}
           >
             <td> <span className=''>{x.code}</span></td>
@@ -171,4 +163,4 @@ const onSearch = (event) => {
   )
 }
 
-export default Client
+export default Index

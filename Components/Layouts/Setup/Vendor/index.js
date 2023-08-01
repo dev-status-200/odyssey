@@ -1,10 +1,11 @@
 import { Row, Col, Table } from 'react-bootstrap';
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Router from 'next/router';
 import { HistoryOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { incrementTab } from '/redux/tabs/tabSlice';
 import axios from 'axios';
+import { Select } from 'antd';
 
 function recordsReducer(state, action){
     switch (action.type) {
@@ -47,6 +48,8 @@ function recordsReducer(state, action){
 const initialState = {
     records: [],
     history:[],
+    allVendors: [],
+    searchedVendor : '',
     // Editing Records
     selectedRecord:{},
     oldRecord:{},
@@ -58,16 +61,31 @@ const Vendor = ({sessionData, vendorData}) => {
   const dispatchNew = useDispatch();
 
   const [ state, dispatch ] = useReducer(recordsReducer, initialState);
-  const { records } = state;
+  const { records , allVendors } = state;
+  const [searchBy , setSearchBy] = useState()
 
   useEffect(() => {
     setRecords();
   }, [])
-
+  
   const setRecords = () => {
     console.log(vendorData.result)
     dispatch({type:'toggle', fieldName:'records', payload:vendorData.result});
+    dispatch({type:'toggle', fieldName:'allVendors', payload:vendorData.result});
   }
+
+
+
+const searchVendor = () => {
+  const data = (searchBy == 'name' ? allVendors.filter((x) => x.name == state.searchedVendor) : allVendors.filter((x) => x.code == state.searchedVendor  ))
+  dispatch({type:'toggle', fieldName:'records', payload:data});
+
+}
+
+const onSearch = (event) => {
+  console.log("search :", event )
+}
+
 
   const getHistory = async(recordid,type) => {
     dispatch({type:'toggle', fieldName:'load', payload:true});
@@ -81,11 +99,33 @@ const Vendor = ({sessionData, vendorData}) => {
     }, 2000);
     })
   }
-
   return (
     <div className='base-page-layout'>
     <Row>
-      <Col><h5>Vendors</h5></Col>
+      <Col md={3}><h5>Vendors</h5></Col>
+      <Col md={7} style={{display:"inline-block"}}><span>Search By :</span>
+        <Select placeholder="Search"
+    onChange={(e) => setSearchBy(e)}
+    style={{width:"150px", marginLeft:"5px"}}
+    options={[{value : "code", label:"Code"},{value : "name", label:"Name"}]}/>
+
+    <Select
+    showSearch
+    style={{width:"290px", marginLeft:"5px"}}
+    placeholder={searchBy == 'name' ? "Type Name" : "Type Code"}
+    onChange={(e) => 
+      dispatch({type:'toggle', fieldName:'searchedVendor', payload: e })}
+    onSearch={onSearch}
+    filterOption={(input, option) =>
+      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+    }
+    options={allVendors.map((x) => {
+     return (searchBy == 'name' ? {value : x.name , label : x.name} : {value : x.code , label : x.code})
+    })}/>
+        <button className='btn-custom right' 
+          onClick={()=> searchVendor() }>Search</button>
+        </Col>
+
       <Col>
         <button className='btn-custom right' 
           onClick={()=>{
