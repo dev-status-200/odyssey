@@ -36,6 +36,11 @@ function setAccesLevels(dispatch, collapsed){
         key: '2-5',
         children: `Content of Tab Pane 2`,
       }),
+      getItem('Non-GL Parties', '2-9',<></>, null, {
+        label: `Non-GL Parties`,
+        key: '2-9',
+        children: `Content of Tab Pane 2`,
+      }),
       getItem('Commodity', '2-3',<></>, null, {
         label: `Commodity`,
         key: '2-3',

@@ -97,7 +97,6 @@ const CreateOrEdit = ({state, dispatch, baseValues, clientData, id}) => {
 
     return (
     <div className='client-styles' style={{maxHeight:720, overflowY:'auto', overflowX:'hidden'}}>
-      <h5>{state.edit?'Edit Non Gl Party':'Create Non Gl Party'}</h5>
       <form onSubmit={handleSubmit(id!="new" ? onEdit : onSubmit, onError)}>
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Basic Info" key="1">

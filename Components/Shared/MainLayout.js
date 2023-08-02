@@ -112,6 +112,7 @@ const MainLayout = ({children}) => {
     riders:false,
     riderAssign:false,
     ledger:false,
+    nonGlParties:false,
   });
 
   useEffect(()=>{ alterTabs(); }, [tabs]);
@@ -137,6 +138,7 @@ const MainLayout = ({children}) => {
         else if(tabs.key=='2-4'){ tempTabActive.voyage=true }
         else if(tabs.key=='2-5'){ tempTabActive.vendorList=true }
         else if(tabs.key=='2-8'){ tempTabActive.vendor=true }
+        else if(tabs.key=='2-9'){ tempTabActive.nonGlParties=true }
         else if(tabs.key=='2-6'){ tempTabActive.charges=true }
         else if(tabs.key=='3-1'){ tempTabActive.accounts=true }
         else if(tabs.key=='3-3'){ tempTabActive.invoiceBills=true }
@@ -197,6 +199,7 @@ const MainLayout = ({children}) => {
     else if(x.key=='2-4'){ Router.push('/setup/voyage') }
     else if(x.key=='2-5'){ Router.push('/setup/vendorList') }
     else if(x.key=='2-8'){ Router.push(`/setup/vendor/${setKey(x)}`) } //these routes are also settled in 2nd useEffect
+    else if(x.key=='2-9'){ Router.push('/setup/nonGlPartiesList') }
     else if(x.key=='2-6'){ Router.push('/charges') }
     else if(x.key=='3-1'){ Router.push('/accounts/chartOfAccount') }
     else if(x.key=='3-2'){ Router.push('/accounts/accountActivity') }
